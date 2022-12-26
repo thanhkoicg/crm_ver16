@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sftp_config_search_view" model="ir.ui.view">
+        <field name="name">sftp.config.search.view</field>
+        <field name="model">sftp.config</field>
+        <field name="arch" type="xml">
+            <search string="SFTP Config">
+                <field name="name" />
+                <field name="host" />
+                <separator/>
+            </search>
+        </field>
+    </record>
+
+    <record id="sftp_config_tree_view" model="ir.ui.view">
+        <field name="name">sftp.config.tree.view</field>
+        <field name="model">sftp.config</field>
+        <field name="arch" type="xml">
+            <tree string="SFTP Config">
+                <field name="name" />
+                <field name="host" />
+                <field name="port"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="sftp_config_form_view" model="ir.ui.view">
+        <field name="name">sftp.config.form.view</field>
+        <field name="model">sftp.config</field>
+        <field name="arch" type="xml">
+            <form string="SFTP Config">
+                <sheet>
+                    <button class="oe_inline oe_stat_button" icon="fa-television" type="object" name="sftp_connection" string="Test Connection" />
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="host"/>
+                            <field name="port"/>
+                        </group>
+                        <group>
+                            <field name="sftp_user"/>
+                            <field name="sftp_password" password="True"/>
+                            <field name="root_folder"/>
+                        </group>
+                        <group>
+                            <field name="is_encrypted_file"/>
+                            <field name="encryption_key"
+                                attrs="{'invisible': [('is_encrypted_file', '=', False)], 'required': [('is_encrypted_file', '=', True)]}" />
+                            <field name="decryption_key"
+                                attrs="{'invisible': [('is_encrypted_file', '=', False)], 'required': [('is_encrypted_file', '=', True)]}" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Models" name="models">
+                            <field name="config_model_ids" nolabel="1" context="{'default_config_id': active_id}">
+                                <tree editable="bottom">
+                                    <field name="model_id" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>
+                                    <field name="child_folder"/>
+                                    <field name="config_id" invisible="True"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_sftp_config" model="ir.actions.act_window">
+        <field name="name">SFTP Config</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sftp.config</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+    </record>
+</odoo>

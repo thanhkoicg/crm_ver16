@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="mail_template_api_notify" model="mail.template">
+            <field name="name">API Notify</field>
+            <field name="email_from">${ctx['email_from'] or ''}</field>
+            <field name="email_to">${ctx['email_to'] or ''}</field>
+            <field name="subject">[Odoo-CRM-System] API Notify</field>
+            <field name="model_id" ref="smn_crm.model_crm_lead"/>
+            <field name="body_html"  type="xml">
+                <p style="color:red;margin:0px 0px 9px 0px;font-size:13px;font-family:&quot;Lucida Grande&quot;, Helvetica, Verdana, Arial, sans-serif;">
+                    Lưu ý đây là email test. Vui lòng không reply hoặc thao tác trên Link trong email. Nếu có vấn đề vui lòng liên hệ IT - Odoo Team.
+                </p>
+                <p>API connect failed. Detail:</p>
+                <ul>
+                    <li>Name: ${ctx['name'] or ''}</li>
+                    <li>Link action: ${ctx['link_action'] or ''}</li>
+                    <li>Send data: ${ctx['send_data'] or ''}</li>
+                    <li>Receive data: ${ctx['receive_data'] or ''}</li>
+                    <li>Status: ${ctx['status'] or ''}</li>
+                    <li>Partner: ${ctx['partner_id'] or ''}</li>
+                    <li>Lead Infor: ${ctx['lead_info'] or ''}</li>
+                  <li>Note: ${ctx['note'] or ''}</li>
+                </ul>
+
+                <p>Regards,</p>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_users_view_form" model="ir.ui.view">
+        <field name="name">res.users.partner.api.view.form.inherit</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='action_id']" position="after">
+                <field name="group_profile_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_res_users_search_view" model="ir.ui.view">
+        <field name="name">res.users.search.view</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <search string="Users">
+                <field name="name"/>
+                <field name="login"/>
+                <field name="group_profile_id"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Profile Group" name="group_by_group_profile_id" domain="[]" context="{'group_by':'group_profile_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="crm_res_users_tree_view" model="ir.ui.view">
+        <field name="name">res.users.tree.view</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <tree string="Users"  create="0">
+                <field name="name"/>
+                <field name="login"/>
+                <field name="group_profile_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="crm_res_users_form_view" model="ir.ui.view">
+        <field name="name">res.users.form.view</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <form string="Users"  create="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="group_profile_id" domain="[('is_profile_group', '=', True)]" required="1" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>
+                        </group>
+                        <group>
+                            <field name="login" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_crm_res_users" model="ir.actions.act_window">
+        <field name="name">Users</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.users</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                          (0,0,{'view_mode':'tree', 'view_id': ref('crm_res_users_tree_view')}),
+                          (0,0,{'view_mode':'form', 'view_id': ref('crm_res_users_form_view')})]"/>
+        <field name="search_view_id" ref="crm_res_users_search_view"/>
+        <field name="domain">[('group_profile_id', '!=', False)]</field>
+        <field name="context">{}</field>
+    </record>
+</odoo>

@@ -1,0 +1,2 @@
+
+update mail_activity_type set res_model_id = NULL where  active = 't'

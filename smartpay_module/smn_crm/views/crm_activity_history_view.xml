@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_activity_history_search_view" model="ir.ui.view">
+        <field name="name">crm.activity.history.search.view</field>
+        <field name="model">crm.activity.history</field>
+        <field name="arch" type="xml">
+            <search string="Activity History">
+                <field name="activity_type_id"/>
+                <field name="lead_id"/>
+                <field name="responsible_user_id"/>
+                <field name="activity_result_id"/>
+                <field name="date_assign"/>
+                <field name="date_done"/>
+                <field name="status"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Activity Type" name="group_by_activity_type_id" domain="[]" context="{'group_by':'activity_type_id'}"/>
+                    <filter string="Lead" name="group_by_lead_id" domain="[]" context="{'group_by':'lead_id'}"/>
+                    <filter string="Status" name="group_by_status" domain="[]" context="{'group_by':'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="crm_activity_history_tree_view" model="ir.ui.view">
+        <field name="name">crm.activity.history.tree.view</field>
+        <field name="model">crm.activity.history</field>
+        <field name="arch" type="xml">
+            <tree string="Activity History" create="0" delete="0">
+                <field name="activity_type_id"/>
+                <field name="lead_id"/>
+                <field name="responsible_user_id"/>
+                <field name="activity_result_id"/>
+                <field name="date_assign"/>
+                <field name="date_done"/>
+                <field name="status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="crm_activity_history_form_view" model="ir.ui.view">
+        <field name="name">crm.activity.history.form.view</field>
+        <field name="model">crm.activity.history</field>
+        <field name="arch" type="xml">
+            <form string="Activity History" edit="0" create="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="activity_type_id"/>
+                            <field name="activity_result_id"/>
+                            <field name="lead_id"/>
+                            <field name="responsible_user_id"/>
+                        </group>
+                        <group>
+                            <field name="date_assign"/>
+                            <field name="date_done"/>
+                            <field name="status"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_crm_activity_history" model="ir.actions.act_window">
+        <field name="name">Activity History</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">crm.activity.history</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+    </record>
+
+</odoo>

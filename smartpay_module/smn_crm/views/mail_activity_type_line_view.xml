@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_mail_activity_type_line_tree_view" model="ir.ui.view">
+        <field name="name">mail.activity.type.line.tree.view</field>
+        <field name="model">mail.activity.type.line</field>
+        <field name="arch" type="xml">
+            <tree string="Line">
+                <field name="sequence"/>
+                <field name="result_id"/>
+                <field name="stage_id"/>
+                <field name="activity_type_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="crm_mail_activity_type_line_form_view" model="ir.ui.view">
+        <field name="name">mail.activity.type.line.form.view</field>
+        <field name="model">mail.activity.type.line</field>
+        <field name="arch" type="xml">
+            <form string="Line">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="result_id"/>
+                        </group>
+                        <group>
+                             <field name="stage_id"/>
+                            <field name="activity_type_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

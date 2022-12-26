@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem action="hr.action_hr_job"
+              id="menu_action_hr_job_recruiment" name="Job Position"
+              parent="hr_recruitment.menu_hr_recruitment_config_jobs"
+      sequence="3"/>
+    <menuitem action="action_hr_document_type"
+              id="menu_hr_document_type" name="Document Type"
+              parent="hr_recruitment.menu_hr_recruitment_config_jobs"
+      sequence="4"/>
+</odoo>

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="crm_lead_partner_api_tree_form" model="ir.ui.view">
+        <field name="name">crm.lead.partner.api.view.tree.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="status_code" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='email_from']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='team_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='expected_revenue']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='activity_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+<!--            <xpath expr="//field[@name='activity_date_deadline_my']" position="attributes">-->
+<!--                <attribute name="invisible">1</attribute>-->
+<!--            </xpath>-->
+        </field>
+    </record>
+
+    <record id="crm_lead_partner_api_view_form" model="ir.ui.view">
+        <field name="name">crm.lead.partner.api.view.form.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='stage_id']" position="attributes">
+                <attribute name="options">{}</attribute>
+                <attribute name="domain">[]</attribute>
+                <attribute name="attrs">{'invisible': [('active', '=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='stage_id']" position="after">
+                <field name="status_code" invisible="1"/>
+                <button string="Cancel" name="act_cancel_lead"
+                    attrs="{'invisible': [('status_code', 'in', ('HSH','NEW'))]}"
+                    type="object"/>
+            </xpath>
+            <xpath expr="//button[@name='action_set_lost']" position="attributes">
+                <attribute name="attrs">{'invisible': True}</attribute>
+            </xpath>
+            <xpath expr="//button[@name='%(crm.action_crm_lead2opportunity_partner)d']" position="attributes">
+                <attribute name="attrs">{'invisible': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('NEW', 'CG'))]}</attribute>
+                <attribute name="placeholder">Lead name</attribute>
+            </xpath>
+            <xpath expr="//sheet/group" position="attributes">
+                <attribute name="attrs">{'invisible': True}</attribute>
+            </xpath>
+            <xpath expr="//sheet//div/h2" position="attributes">
+                <attribute name="attrs">{'invisible': True}</attribute>
+            </xpath>
+            <xpath expr="//sheet/notebook//page[@name='extra']" position="attributes">
+                <attribute name="attrs">{'invisible': True}</attribute>
+            </xpath>
+            <xpath expr="//sheet/notebook//page[@name='lead']" position="attributes">
+                <attribute name="attrs">{'invisible': True}</attribute>
+            </xpath>
+            <xpath expr="//sheet/notebook//page[@name='internal_notes']" position="attributes">
+                <attribute name="attrs">{'invisible': True}</attribute>
+            </xpath>
+            <xpath expr="//form/div//field[@name='activity_ids']" position="attributes">
+                <attribute name="attrs">{'invisible': True}</attribute>
+            </xpath>
+            <xpath expr="//sheet/field[@name='active']" position="after">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_lead_history" type="object" class="oe_stat_button" icon="fa-pencil-square-o">
+                        <field name="history_count" widget="statinfo" string="Activities"/>
+                    </button>
+                </div>
+            </xpath>
+            <xpath expr="//sheet/group" position="after">
+                <group name="lead_info_api_main">
+                    <group name="lead_info_api">
+                        <field name="contact_name" attrs="{'required': True, 'readonly': [('status_code', '!=', 'NEW')]}" placeholder="Tên" class="oe_inline"/>
+                        <label for="nic_number" string="NIC No"/>
+                        <div>
+                            <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                <field name="nic_number" attrs="{'required': True, 'readonly': [('status_code', '!=', 'NEW')]}" placeholder="Số CMND/CCCD" class="oe_inline" nolabel="1"/>
+                                <field name="nic_number_date" attrs="{'required': True, 'readonly': [('status_code', '!=', 'NEW')]}" placeholder="Ngày cấp" class="oe_inline"/>
+                                <field name="nic_number_place" attrs="{'required': True, 'readonly': [('status_code', '!=', 'NEW')]}" placeholder="Nơi cấp" class="o_address_state"/>
+                            </div>
+                        </div>
+                        <label for="birthday"/>
+                        <div>
+                            <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                <field name="birthday"
+                                       attrs="{'required': [('status_code', '=', 'HGKH')],
+                                       'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}" placeholder="Ngày sinh" class="oe_inline" nolabel="1"/>
+                                <span class="oe_inline" style=" font-weight: bold;">
+                                    Gender
+                                </span>
+                                <field name="gender" attrs="{'required': [('status_code', '=', 'HGKH')],
+                                'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}" class="oe_inline"/>
+                            </div>
+                        </div>
+                        <label for="street" string="Address"/>
+                        <div>
+                            <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                <field name="province_id"
+                                       attrs="{'required': [('status_code', '=', 'HGKH')],
+                                       'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}"
+                                       placeholder="TP/Tỉnh" class="oe_inline" nolabel="1"/>
+                                <field name="district_id"
+                                       attrs="{'required': [('status_code', '=', 'HGKH')],
+                                       'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}"
+                                       placeholder="Quận/Huyện" class="oe_inline"/>
+                                <field name="ward_id"
+                                       attrs="{'required': [('status_code', '=', 'HGKH')],
+                                       'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}"
+                                       placeholder="Xã/Phường" class="oe_inline"/>
+                            </div>
+                            <field name="street"
+                                   attrs="{'required': [('status_code', '=', 'HGKH')],
+                                   'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}"
+                                   placeholder="Đường" class="o_address_state"/>
+                        </div>
+                        <field name="is_same_address" attrs="{'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}"/>
+                        <label for="household_street" string="Address Book Family"/>
+                        <div>
+                            <div class="o_row o_row_readonly o_hr_holidays_dates">
+                                <field name="household_province_id"
+                                       attrs="{'required': [('status_code', '=', 'HGKH')],
+                                       'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}" placeholder="TP/Tỉnh" class="oe_inline" nolabel="1"/>
+                                <field name="household_district_id"
+                                       attrs="{'required': [('status_code', '=', 'HGKH')],
+                                       'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}" placeholder="Quận/Huyện" class="oe_inline"/>
+                                <field name="household_ward_id"
+                                       attrs="{'required': [('status_code', '=', 'HGKH')],
+                                       'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}" placeholder="Xã/Phường" class="oe_inline"/>
+                            </div>
+                            <field name="household_street"
+                                   attrs="{'required': [('status_code', '=', 'HGKH')],
+                                   'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}" placeholder="Đường" class="o_address_state"/>
+                        </div>
+                        <field name="is_blacklisted" invisible="1"/>
+                        <field name="phone_blacklisted" invisible="1"/>
+                        <field name="email_state" invisible="1"/>
+                        <field name="phone_state" invisible="1"/>
+                        <label for="phone_group_lead_info" class="oe_inline"/>
+                        <div class="o_row o_row_readonly">
+                            <button name="phone_action_blacklist_remove" class="fa fa-ban text-danger"
+                                title="This phone number is blacklisted for SMS Marketing. Click to unblacklist."
+                                type="object" context="{'default_phone': phone}" groups="base.group_user"
+                                attrs="{'invisible': [('phone_blacklisted', '=', False)]}"/>
+                            <field name="phone" id="phone_group_lead_info" widget="phone" attrs="{'required': True, 'readonly': [('status_code', '!=', 'NEW')]}"/>
+                            <button name="button_click_to_call_mobile" type="object" class="oe_link" string="Call"/>
+                        </div>
+                        <field name="user_id" domain="[('share', '=', False)]"
+                            context="{'default_sales_team_id': team_id}" widget="many2one_avatar_user"
+                            attrs="{'readonly': True}"/>
+                        <field name="sale_person_code"/>
+                        <field name="team_id" widget="selection"
+                            domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"
+                        attrs="{'readonly': True}"/>
+                        <field name="partner_id" attrs="{'readonly': [('status_code', '!=', 'NEW')]}"/>
+                    </group>
+                    <group>
+                        <field name="assign_user_id" options="{'no_create': True, 'no_edit': True, 'no_open': True}"
+                        attrs="{'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'KTDK'))]}"/>
+                        <field name="activity_id" options="{'no_create': True, 'no_edit': True, 'no_open': True}"
+                        attrs="{'required': [('status_code', '=', 'NEW')],
+                        'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'KTDK'))]}"/>
+                        <field name="comp_activity_result_ids" invisible="1"/>
+                        <field name="assign_date" attrs="{'required': [('activity_id', '!=', False)],
+                        'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'KTDK'))]}"/>
+                        <field name="activity_result_id" options="{'no_create': True, 'no_edit': True, 'no_open': True}"
+                        attrs="{'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'KTDK'))]}"/>
+                        <field name="remark" attrs="{'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'KTDK'))]}"/>
+                        <field name="next_assign_user_id" options="{'no_create': True, 'no_edit': True, 'no_open': True}"
+                        attrs="{'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'KTDK'))]}"/>
+                        <field name="next_activity_id" options="{'no_create': True, 'no_edit': True, 'no_open': True}"
+                        attrs="{'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'KTDK'))]}"/>
+                        <field name="comp_next_activity_ids" invisible="1"/>
+                        <field name="next_assign_date" attrs="{'required': [('next_activity_id', '!=', False)],
+                        'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'KTDK'))]}"/>
+                        <button string="Done" name="act_done_activity" type="object" class="btn-primary"
+                        attrs="{'invisible': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'KTDK'))]}"/>
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//sheet/notebook//page[@name='internal_notes']" position="before">
+                <page name="lead_partner" string="Information">
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="smn_crm_lead_my_leads">
+        <field name="name">My Leads</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">tree,kanban,graph,pivot,calendar,form,activity</field>
+        <field name="domain">['|', ('create_uid','=',uid), ('assign_user_id','=',uid), '|', ('type','=','lead'), ('type','=',False)]</field>
+        <field name="search_view_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="context">{
+            'default_type':'lead',
+            'search_default_type': 'lead',
+            'create_uid': uid,
+            'search_default_to_process':1,
+        }
+        </field>
+    </record>
+
+     <record model="ir.actions.act_window" id="smn_crm_lead_all_leads">
+        <field name="name">All Leads</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">tree,kanban,graph,pivot,calendar,form,activity</field>
+        <field name="domain">['|', ('type','=','lead'), ('type','=',False)]</field>
+        <field name="search_view_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="context">{
+            'default_type':'lead',
+            'search_default_type': 'lead',
+            'search_default_to_process':1,
+            }
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="smn_crm_lead_saleteam_all_leads_act_w">
+        <field name="name">Sales team: All Leads</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">tree,kanban,graph,pivot,calendar,form,activity</field>
+        <field name="domain">['|', ('type','=','lead'), ('type','=',False), ('team_id.user_id', '=', uid)]</field>
+        <field name="search_view_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="context">{
+            'default_type':'lead',
+            'search_default_type': 'lead',
+            'search_default_to_process':1,
+            }
+        </field>
+    </record>
+
+</odoo>

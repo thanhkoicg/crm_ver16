@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="hr_applicant_create_user_mail_template" model="mail.template">
+            <field name="name">[Recruitment] Profile has been create code</field>
+            <field name="email_from"><![CDATA[${user.company_id.name} <${(user.company_id.email or user.email)|safe}>]]></field>
+            <field name="email_to">${object.user_id and object.user_id.email or ''}, ${object.request_user_id and object.request_user_id.email or ''}</field>
+            <field name="model_id" ref="hr_recruitment.model_hr_applicant"/>
+            <field name="subject">[Recruitment] Profile has been create code</field>
+            <field name="body_html" type="xml">
+				<p>[Recruitment] Profile has been create code by ${ctx.get('user_create_code', '#')}</p>
+                <p><strong>Click <a href="${ctx.get('applicant_url', '#')}">Link</a> to view detail</strong></p>
+			</field>
+        </record>
+
+
+    </data>
+</odoo>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="smn_api_history_search_view" model="ir.ui.view">
+        <field name="name">smn.api.history.search</field>
+        <field name="model">smn.api.history</field>
+        <field name="arch" type="xml">
+            <search string="API History">
+                <field name="name"/>
+                <field name="link_action"/>
+                <field name="send_data"/>
+                <field name="receive_data"/>
+                <field name="status"/>
+                <field name="partner_id"/>
+                <field name="lead_info"/>
+                <field name="create_date"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Name" name="group_by_name" domain="[]" context="{'group_by':'name'}"/>
+                    <filter string="Link Action" name="group_by_link_action" domain="[]" context="{'group_by':'link_action'}"/>
+                    <filter string="Status" name="group_by_status" domain="[]" context="{'group_by':'status'}"/>
+                    <filter string="Partner" name="group_by_partner_id" domain="[]" context="{'group_by':'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="smn_api_history_tree_view" model="ir.ui.view">
+        <field name="name">smn.api.history.tree</field>
+        <field name="model">smn.api.history</field>
+        <field name="arch" type="xml">
+            <tree string="API History" decoration-muted="status == 'done'" duplicate="false" edit="false" create="false">
+                <field name="create_date"/>
+                <field name="name"/>
+                <field name="link_action"/>
+                <field name="status"/>
+                <field name="partner_id"/>
+                <field name="lead_info"/>
+                <field name="receive_data"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="smn_api_history_form_view" model="ir.ui.view">
+        <field name="name">smn.api.history.form</field>
+        <field name="model">smn.api.history</field>
+        <field name="arch" type="xml">
+            <form string="API History" duplicate="false" edit="false" create="false">
+                <sheet>
+                    <div class="oe_title" name="title">
+                        <h2>
+                            <field name="name" placeholder="e.g. UPS Express"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="status"/>
+                            <field name="link_action"/>
+                            <field name="create_date"/>
+                            <field name="send_data"/>
+                        </group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="lead_info"/>
+                            <field name="note"/>
+                            <field name="receive_data"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!--action menu-->
+    <record id="action_smn_api_history" model="ir.actions.act_window">
+        <field name="name">API History</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">smn.api.history</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="smn_api_history_search_view"/>
+        <field name="domain">[]</field>
+    </record>
+
+</odoo>
