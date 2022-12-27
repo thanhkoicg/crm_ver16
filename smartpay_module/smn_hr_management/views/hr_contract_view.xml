@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!--    <record id="smn_hr_contract_view_form" model="ir.ui.view">-->
+<!--        <field name="name">hr.contract.view.form.inherit</field>-->
+<!--        <field name="model">hr.contract</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <form string="Current Contract">-->
+<!--                <header>-->
+<!--                    <field name="status" widget="statusbar"/>-->
+<!--                    <field name="state" invisible="1" groups="!hr_contract.group_hr_contract_manager" widget="statusbar"/>-->
+<!--                    <field name="state" invisible="1" groups="hr_contract.group_hr_contract_manager" widget="statusbar" options="{'clickable': '1'}"/>-->
+<!--                </header>-->
+<!--                <sheet>-->
+<!--                    <div class="oe_button_box" name="button_box"/>-->
+<!--                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>-->
+<!--                    <div class="oe_title pe-0 w-100 mw-100" name="title">-->
+<!--                        <h1 class="d-flex flex-row justify-content-between">-->
+<!--                            <field name="name" class="text-truncate" placeholder="Contract Reference"/>-->
+<!--                            <field name="kanban_state"-->
+<!--                                class="d-flex align-items-center"-->
+<!--                                groups="!hr_contract.group_hr_contract_manager"-->
+<!--                                widget="state_selection" readonly="1"/>-->
+<!--                            <field name="kanban_state"-->
+<!--                                class="d-flex align-items-center"-->
+<!--                                groups="hr_contract.group_hr_contract_manager"-->
+<!--                                widget="state_selection" readonly="0"/>-->
+<!--                        </h1>-->
+<!--                        <h2>-->
+<!--                            <field name="company_id" groups="base.group_multi_company" invisible="1"/>-->
+<!--                        </h2>-->
+<!--                    </div>-->
+<!--                    <group name="top_info">-->
+<!--                        <group name="top_info_left">-->
+<!--                            <field name="active" invisible="1"/>-->
+<!--                            <field name="company_id" invisible="1"/>-->
+<!--                            <field name="employee_id" required="1"/>-->
+<!--                            <field name="date_start" string="Contract Start Date"/>-->
+<!--                            <field name="date_end" string="Contract End Date"/>-->
+<!--                            <field name="company_country_id" invisible="1"/>-->
+<!--                            <field name="country_code" invisible="1"/>-->
+<!--                            <field name="structure_type_id" invisible="1" groups="!hr_contract.group_hr_contract_manager" domain="['|', ('country_id', '=', False), ('country_id', '=', company_country_id)]" options="{'no_open': True, 'no_create': True}"/>-->
+<!--                            <field name="structure_type_id" invisible="1" groups="hr_contract.group_hr_contract_manager" domain="['|', ('country_id', '=', False), ('country_id', '=', company_country_id)]"/>-->
+<!--                            <field name="calendar_mismatch" invisible="1"/>-->
+<!--                            <label for="resource_calendar_id" invisible="1"/>-->
+<!--                            <div id="resource_calendar_warning" invisible="1">-->
+<!--                                <field name="resource_calendar_id" groups="!hr_contract.group_hr_contract_manager" required="1" nolabel="1" options="{'no_open': True, 'no_create': True}"/>-->
+<!--                                <field name="resource_calendar_id" groups="hr_contract.group_hr_contract_manager" required="1" nolabel="1"/>-->
+<!--                                <span attrs="{'invisible': ['|', ('calendar_mismatch', '=', False), ('state', '!=', 'open')]}"-->
+<!--                                    class="fa fa-exclamation-triangle text-danger o_calendar_warning ms-3"-->
+<!--                                    data-tooltip-template="hr_contract.CalendarMismatch"-->
+<!--                                    data-tooltip-info='{-->
+<!--                                            "text":"Calendar Mismatch : The employee&apos;s calendar does not match this contract&apos;s calendar. This could lead to unexpected behaviors."-->
+<!--                                        }'>-->
+<!--                                </span>-->
+<!--                            </div>-->
+<!--                        </group>-->
+<!--                        <group name="top_info_right">-->
+<!--                            <field name="department_id" groups="!hr_contract.group_hr_contract_manager" options="{'no_open': True, 'no_create': True}"/>-->
+<!--                            <field name="department_id" groups="hr_contract.group_hr_contract_manager"/>-->
+<!--                            <field name="job_id" groups="!hr_contract.group_hr_contract_manager" options="{'no_open': True, 'no_create': True}"/>-->
+<!--                            <field name="job_id" groups="hr_contract.group_hr_contract_manager"/>-->
+<!--                            <field name="contract_type_id" groups="!hr_contract.group_hr_contract_manager" required="1" options="{'no_open': True, 'no_create': True}"/>-->
+<!--                            <field name="contract_type_id" groups="hr_contract.group_hr_contract_manager" required="1"/>-->
+<!--                            <field name="hr_responsible_id" invisible="1"/>-->
+<!--                        </group>-->
+<!--                    </group>-->
+<!--                    <notebook>-->
+<!--                        <page string="Content" groups="hr_contract.group_hr_contract_manager">-->
+<!--                            <group name="notes_group">-->
+<!--                                <field name="content" nolabel="1" colspan="2" placeholder="Type in notes about this contract..."/>-->
+<!--                            </group>-->
+<!--                        </page>-->
+<!--                        <page string="Contract Details" name="other" groups="hr_contract.group_hr_contract_manager" invisible="1">-->
+<!--                            <group><group name="contract_details"/></group>-->
+<!--                            <group name="notes_group" string="Notes">-->
+<!--                                <field name="notes" nolabel="1" colspan="2" placeholder="Type in notes about this contract..."/>-->
+<!--                            </group>-->
+<!--                        </page>-->
+<!--                        <page string="Salary Information" name="information" class="o_hr_contract_salary_information" invisible="1">-->
+<!--                            <group name="salary_info">-->
+<!--                                <group name="salary">-->
+<!--                                    <label for="wage"/>-->
+<!--                                    <div class="o_row mw-50" name="wage">-->
+<!--                                        <field name="wage" class="oe_inline o_hr_narrow_field" nolabel="1"/>-->
+<!--                                        <div class="mb-3">/ month</div>-->
+<!--                                    </div>-->
+<!--                                </group>-->
+<!--                                <group name="yearly_advantages"/>-->
+<!--                            </group>-->
+<!--                        </page>-->
+<!--                    </notebook>-->
+<!--                </sheet>-->
+<!--                <div class="oe_chatter">-->
+<!--                    <field name="message_follower_ids" groups="base.group_user"/>-->
+<!--                    <field name="activity_ids"/>-->
+<!--                    <field name="message_ids"/>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <record id="smn_hr_contract_view_form" model="ir.ui.view">
+        <field name="name">hr.contract.view.form.inherit</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="replace">
+                <header>
+                    <button string="Send" name="act_send" type="object" attrs="{'invisible': [('status', '!=', 'draft')]}"/>
+                    <button string="Sign" name="act_sign" type="object" attrs="{'invisible': [('status', '!=', 'unsigned')]}"/>
+                    <field name="status" widget="statusbar"/>
+                    <field name="state" groups="!hr_contract.group_hr_contract_manager" invisible="1" widget="statusbar"/>
+                    <field name="state" groups="hr_contract.group_hr_contract_manager" invisible="1" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+            </xpath>
+            <xpath expr="//group//group//field[@name='structure_type_id']" position="replace">
+            </xpath>
+            <xpath expr="//group//group//field[@name='structure_type_id']" position="attributes">
+                <attribute name="attrs">{'invisible': True}</attribute>
+            </xpath>
+            <xpath expr="//group//group//field[@name='resource_calendar_id']" position="replace">
+            </xpath>
+            <xpath expr="//group//group//field[@name='resource_calendar_id']" position="attributes">
+                <attribute name="attrs">{'invisible': True}</attribute>
+            </xpath>
+            <xpath expr="//notebook//page[@name='other']" position="after">
+                <page string="Content" name="other" groups="hr_contract.group_hr_contract_manager">
+                    <group name="content_group">
+                        <field name="content" nolabel="1" colspan="2"/>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//notebook//page[@name='other']" position="attributes">
+                <attribute name="attrs">{'invisible': True}</attribute>
+            </xpath>
+            <xpath expr="//notebook//page[@name='information']" position="attributes">
+                <attribute name="attrs">{'invisible': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_end']" position="after">
+                <field name="deadline_sign_date" required="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="smn_hr_contract_action" model="ir.actions.act_window">
+        <field name="name">Contracts</field>
+        <field name="res_model">hr.contract</field>
+        <field name="view_mode">tree,form</field>
+<!--        <field name="view_ids" eval="[(5, 0, 0),-->
+<!--                          (0,0,{'view_mode':'tree', 'view_id': ref('hr_contract.hr_contract_view_tree')}),-->
+<!--                          (0,0,{'view_mode':'form', 'view_id': ref('smn_hr_contract_view_form')})]"/>-->
+    </record>
+</odoo>

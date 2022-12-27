@@ -60,7 +60,8 @@
                 <page name="hr_document_line" string="Documents">
                     <field name="attachment_ids" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}">
                         <tree create="false" delete="false" editable="bottom">
-                            <field name="hr_document_type_id" string="Document Type" readonly="1" options="{'create_edit': False, 'no_open': True}"/>
+                            <field name="create_uid" invisible="1"/>
+                            <field name="hr_document_type_id" string="Document Type" attrs="{'readonly': [('create_uid', '!=', '1')]}" options="{'create_edit': False, 'no_open': True}"/>
                             <field name="datas" filename="name" widget="binary" string="File"/>
                             <field name="name" invisible="1"/>
                         </tree>

@@ -5,5 +5,9 @@
             <field name="key">smn_email_server_to_notify</field>
             <field name="value">test@mail</field>
         </record>
+        <record model="ir.config_parameter" id="smn_email_hr">
+            <field name="key">smn_email_hr</field>
+            <field name="value">C&amp;B@smartnetvn.com.vn</field>
+        </record>
     </data>
 </odoo>

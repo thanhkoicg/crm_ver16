@@ -8,4 +8,17 @@
               id="menu_hr_document_type" name="Document Type"
               parent="hr_recruitment.menu_hr_recruitment_config_jobs"
       sequence="4"/>
+
+    <menuitem
+            id="menu_smn_employee_contract"
+            name="Contracts"
+            action="smn_hr_contract_action"
+            parent="hr.menu_hr_employee_payroll"
+            sequence="5"/>
+    <menuitem
+            id="menu_smn_employee_need_create_contract"
+            name="Need create Contract"
+            action="smn_hr_contract_action"
+            parent="hr.menu_hr_employee_payroll"
+            sequence="6"/>
 </odoo>

@@ -243,9 +243,12 @@ class HrApplicant(models.Model):
         self.send_mail_to_user(template_xml_id)
 
     def unlink(self):
+        error = []
         for rcs in self:
-            if rcs.active and self.attachment_ids:
-                raise UserError("You have to archive before delete")
+            if rcs.active and rcs.stage_id.code != 'new':
+                error.append(rcs.partner_name)
+        if error:
+            raise UserError("You have to archive %s before delete" % ', '.join(error))
         return super(HrApplicant, self).unlink()
 
     def act_create_contract(self):

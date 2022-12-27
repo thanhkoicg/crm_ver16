@@ -15,6 +15,7 @@ This module allows you to manage API for Partner.
         'hr',
         'hr_recruitment',
         'hr_contract'
+        'smn_crm'
     ],
     'data': [
         'security/ir.model.access.csv',
@@ -26,6 +27,7 @@ This module allows you to manage API for Partner.
         'views/hr_job_view.xml',
         'views/hr_recruitment_stage_view.xml',
         'views/hr_contract_type_view.xml',
+        'views/hr_contract_view.xml',
         # 'wizard/smn_popup_message_view.xml',
         'views/menu.xml'
     ],
