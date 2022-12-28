@@ -1,5 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="view_hr_contract_tree" model="ir.ui.view">
+        <field name="name">hr.contract.tree</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field name="status"/>
+            </field>
+            <field name="state" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+            <field name="structure_type_id" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+        </field>
+    </record>
+    <record id="hr_contract_view_search" model="ir.ui.view">
+        <field name="name">hr.contract.view.search.inherit.skills</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='group_by_state']" position="after">
+                <filter string="Status Contract" name="group_by_status" context="{'group_by': 'status'}"/>
+            </xpath>
+            <xpath expr="//filter[@name='group_by_state']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='group_by_resource_calendar_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='group_by_structure_type_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='running']" position="attributes">
+                <attribute name="domain">[('status', '!=', 'draft')]</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='not_running']" position="attributes">
+                <attribute name="domain">[('status', '=', 'draft')]</attribute>
+            </xpath>
+        </field>
+    </record>
     <record id="smn_hr_contract_view_form" model="ir.ui.view">
         <field name="name">hr.contract.view.form.inherit</field>
         <field name="model">hr.contract</field>

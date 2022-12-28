@@ -13,7 +13,7 @@ class HrContract(models.Model):
         ('unsigned', 'Unsigned'),
         ('signed', 'Signed'),
         ('expired', 'Expired')
-    ], default='draft', tracking=True)
+    ], default='draft', tracking=True, string='Status Contract')
     deadline_sign_date = fields.Date()
     remind_datetime = fields.Date()
     sign_date = fields.Datetime(string='Sign Date', tracking=True, copy=False)

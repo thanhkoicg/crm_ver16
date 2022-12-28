@@ -45,8 +45,8 @@
             <xpath expr="//group//field[@name='user_id']" position="after">
 <!--                <field name="responsible_user_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>-->
                 <field name="create_uid" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" string="Request by" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>
-                <field name="bank_account" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}"/>
-                <field name="bank_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>
+                <field name="bank_account" required="1" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}"/>
+                <field name="bank_id" required="1" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>
                 <field name="bank_branch_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>
                 <field name="confirm_user_id" attrs="{'readonly': [('status_code', '!=', '1')]}" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>
                 <field name="create_code_user_id" attrs="{'readonly': [('status_code', '!=', '1')]}" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>
@@ -120,21 +120,25 @@
                 <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//sheet//field[@name='partner_name']" position="attributes">
+                <attribute name="required">True</attribute>
                 <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//group//field[@name='email_from']" position="attributes">
+                <attribute name="required">True</attribute>
                 <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//group//field[@name='type_id']" position="attributes">
                 <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//group//field[@name='partner_phone']" position="attributes">
+                <attribute name="required">True</attribute>
                 <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//group//field[@name='linkedin_profile']" position="attributes">
                 <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//group//field[@name='job_id']" position="attributes">
+                <attribute name="required">True</attribute>
                 <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//group//field[@name='department_id']" position="attributes">
