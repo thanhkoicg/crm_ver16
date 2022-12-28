@@ -76,10 +76,12 @@ class HrApplicant(models.Model):
 
     def act_submit(self):
         self.ensure_one()
-        self.check_require_documents()
+        if not self.job_id:
+            raise UserError("Please select Applied Job")
         stage_id = self.env['hr.recruitment.stage'].search([('code', '=', 'submit')])
         if not stage_id:
             raise UserError("Not found stage name Submit, contact Admin")
+        self.check_require_documents()
         self.stage_id = stage_id.id
         return
 
@@ -165,7 +167,7 @@ class HrApplicant(models.Model):
 
     def write(self, vals):
         for app in self:
-            if 'stage_id' in vals and vals.get('job_id') is False:
+            if 'stage_id' in vals and vals.get('job_id') is False and vals.get('stage_id') is False:
                 stage_new_id = self.env['hr.recruitment.stage'].search([('code', '=', 'new')])
                 vals['stage_id'] = stage_new_id.id if stage_new_id else False
             if 'job_id' in vals and vals.get('job_id') is False:
@@ -286,12 +288,24 @@ class HrApplicant(models.Model):
         return
 
     def send_mail_to_user(self, template_xml_id):
-        content = {}
         ir_config_param = self.env['ir.config_parameter'].sudo()
-        email_from = ir_config_param.get_param('smn_email_system_for_notify')
-        content.update({
-            'email_from': email_from,
-            'email_to': self.user_id.email
-        })
-        template_xml_id.with_user(SUPERUSER_ID).with_context(content).send_mail(self.id, force_send=True)
+        base_url = ir_config_param.get_param('web.base.url')
+        base_url = base_url.replace("https://", "")
+        base_url = base_url.replace("http://", "")
+        applicant_url = base_url + "/web#id=" + str(self.id) + "&view_type=form&model=hr.applicant"
+        context = {
+            'applicant_url': applicant_url,
+        }
+        email_values = {
+            'email_to': self.applicant_user_id.email,
+            'email_cc': False,
+            'auto_delete': True,
+            'recipient_ids': [],
+            'partner_ids': [],
+            'scheduled_date': False,
+        }
+        template_xml_id.with_context(**context).send_mail(
+            self.id, force_send=True,
+            email_values=email_values,
+            email_layout_xmlid='mail.mail_notification_light')
         return

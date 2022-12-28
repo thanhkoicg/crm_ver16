@@ -16,13 +16,24 @@ class HrContract(models.Model):
     ], default='draft', tracking=True)
     deadline_sign_date = fields.Date()
     remind_datetime = fields.Date()
+    sign_date = fields.Datetime(string='Sign Date', tracking=True, copy=False)
+
+    @api.onchange('contract_type_id')
+    def onchange_contract_type_id(self):
+        if self.contract_type_id:
+            self.content = self.contract_type_id.content
+        else:
+            self.content = ''
+        return
 
     def act_send(self):
         self.ensure_one()
         if not self.employee_id:
             raise UserError("Please input Employee")
-        template_xml_id = self.env.ref('smn_hr_management.hr_contract_send_to_sign')
-        self.send_mail_to_user(template_xml_id)
+        if not self.contract_type_id:
+            raise UserError("Please input Contract Type")
+        self.send_email_contract_notify('smn_hr_management.hr_contract_send_to_sign')
+        self.update_content_unsigned()
         self.status = 'unsigned'
         return
 
@@ -30,6 +41,7 @@ class HrContract(models.Model):
         self.ensure_one()
         if self.employee_id and self.employee_id.user_id.id != self.env.user.id:
             raise UserError("Only %s have the right to sign" % self.employee_id.name)
+        self.update_content_signed()
         self.status = 'signed'
         return
 
@@ -38,25 +50,72 @@ class HrContract(models.Model):
         self.status = 'expired'
         return
 
-    def send_mail_to_user(self, template_xml_id):
-        content = {}
-        ir_config_param = self.env['ir.config_parameter'].sudo()
-        email_from = ir_config_param.get_param('smn_email_system_for_notify')
-        content.update({
-            'email_from': email_from,
-            'email_to': self.employee_id.user_id.email
-        })
-        template_xml_id.with_user(SUPERUSER_ID).with_context(content).send_mail(self.id, force_send=True)
+    def update_content_unsigned(self):
+        if self.content:
+            employee = self.employee_id
+            applicant_id = self.env['hr.applicant'].search([('applicant_user_id', '=', self.employee_id.user_id.id)])
+            if not applicant_id:
+                raise UserError("This employee don't have Applicant")
+            employee_data = {
+                'employee_name': employee.name,
+                'contract_number': self.name,
+                'birthday': employee.birthday and datetime.strptime(str(employee.birthday), '%Y-%m-%d').strftime("%d/%m/%Y") or '',
+                'identification_id': employee.identification_id or '',
+                'issue_date': datetime.strptime(str(applicant_id.nid_issue_date), '%Y-%m-%d').strftime("%d/%m/%Y") or '',
+                'issue_place': applicant_id.nid_issue_place_id and applicant_id.nid_issue_place_id.name or '',
+                'address': employee.place_of_birth,
+                'mobile_phone': employee.mobile_phone,
+                'email': employee.work_email or '',
+                'date_start': self.date_start and datetime.strptime(str(self.date_start), '%Y-%m-%d').strftime("%d/%m/%Y") or '',
+                'date_end': self.date_end and datetime.strptime(str(self.date_end), '%Y-%m-%d').strftime("%d/%m/%Y") or '',
+                'signed_crm': '',
+                'signed_date': '',
+                'employee_name_footer': '',
+            }
+            if self.contract_type_id and self.contract_type_id.content:
+                content = self.contract_type_id.content.format(**employee_data)
+                self.content = content
+        return
+
+    def update_content_signed(self):
+        signed_crm = ''
+        employee = self.employee_id
+        if self.status == 'unsigned':
+            signed_crm = u"Đã ký"
+        applicant_id = self.env['hr.applicant'].search([('applicant_user_id', '=', self.employee_id.user_id.id)])
+        if not applicant_id:
+            raise UserError("This employee don't have Applicant")
+        employee_data = {
+            'employee_name': employee.name,
+            'contract_number': self.name,
+            'birthday': employee.birthday and datetime.strptime(str(employee.birthday), '%Y-%m-%d').strftime("%d/%m/%Y") or '',
+            'identification_id': employee.identification_id or '',
+            'issue_date': datetime.strptime(str(applicant_id.nid_issue_date), '%Y-%m-%d').strftime("%d/%m/%Y") or '',
+            'issue_place': applicant_id.nid_issue_place_id and applicant_id.nid_issue_place_id.name or '',
+            'address': employee.place_of_birth,
+            'mobile_phone': employee.mobile_phone,
+            'email': employee.work_email or '',
+            'date_start': self.date_start and datetime.strptime(str(self.date_start), '%Y-%m-%d').strftime("%d/%m/%Y") or '',
+            'date_end': self.date_end and datetime.strptime(str(self.date_end), '%Y-%m-%d').strftime("%d/%m/%Y") or '',
+            'signed_crm': signed_crm,
+            'signed_date': datetime.now().strftime("%d/%m/%Y"),
+            'employee_name_footer': employee.name.upper(),
+        }
+        if self.contract_type_id and self.contract_type_id.content:
+            content = self.contract_type_id.content.format(**employee_data)
+            self.content = content
         return
 
     def cron_set_expired_contract(self):
-        contract_ids = self.search()
-
+        today = fields.date.today()
+        contracts = self.search([('status', '=', 'signed'), ('date_end', '=', today)])
+        for contract in contracts:
+            contract.status = 'expired'
         return
 
     def cron_contract_notify_deadline_need_to_sign(self):
         today = fields.date.today()
-        contracts = self.search([('state', '=', 'sign')])
+        contracts = self.search([('status', '=', 'unsigned')])
         for contract in contracts:
             if contract.deadline_sign_date:
                 if not contract.remind_datetime:
@@ -73,7 +132,7 @@ class HrContract(models.Model):
 
     def cron_contract_notify_about_expire(self):
         today = fields.date.today() - timedelta(days=15)
-        contracts = self.search([('state', '=', 'open'), ('date_end', '=', today)])
+        contracts = self.search([('status', '=', 'signed'), ('date_end', '=', today)])
         ctr_name = []
         hr_cb_email = self.env['ir.config_parameter'].sudo().get_param('smn_email_hr')
         for contract in contracts:
@@ -101,21 +160,25 @@ class HrContract(models.Model):
             if self.employee_id.parent_id and self.employee_id.parent_id.work_email:
                 email_to.append(self.employee_id.parent_id.work_email)
         contract_link = base_url + "/web#id=" + str(self.id)+ "&view_type=form&model=hr.contract"
-        date_start = self.date_start and datetime.strptime(self.date_start, '%Y-%m-%d').strftime("%d/%m/%Y") or ''
-        date_end = self.date_end and datetime.strptime(self.date_end, '%Y-%m-%d').strftime("%d/%m/%Y") or ''
-        email_from = ir_config_param.get_param('smn_email_system_for_notify')
+        # email_from = ir_config_param.get_param('smn_email_system_for_notify')
         hr_cb_email = ir_config_param.get_param('smn_email_hr')
         if hr_cb_email:
             email_to.append(hr_cb_email)
-        template.with_context({
-            'contact_number': self.name,
-            'date_start': date_start,
-            'date_end': date_end,
-            'deadline_sign_date'
+        context = {
             'contract_link': contract_link,
-            'email_from': email_from,
+            # 'email_from': email_from,
+            # 'email_to': ','.join(email_to),
+            'smn_email_hr': hr_cb_email
+            }
+        email_values = {
             'email_to': ','.join(email_to),
-            'smn_email_hr': self.employee_id.name,
-            'contract_type': self.contract_type_id.name if self.contract_type_id else '',
-            }).send_mail(self.id, force_send=True)
-
+            'email_cc': False,
+            'auto_delete': True,
+            'recipient_ids': [],
+            'partner_ids': [],
+            'scheduled_date': False,
+        }
+        template.with_context(**context).send_mail(
+            self.id, force_send=True,
+            email_values=email_values,
+            email_layout_xmlid='mail.mail_notification_light')

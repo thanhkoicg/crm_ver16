@@ -15,11 +15,12 @@ This module allows you to manage API for Partner.
         'hr',
         'hr_recruitment',
         'hr_contract'
-        'smn_crm'
+        # 'smn_crm'
     ],
     'data': [
         'security/ir.model.access.csv',
         'data/ir_sequence.xml',
+        'data/ir_config_parameter.xml',
         'data/mail_template.xml',
         'views/res_bank_view.xml',
         'views/hr_document_type_view.xml',

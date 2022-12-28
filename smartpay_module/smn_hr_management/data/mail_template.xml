@@ -3,47 +3,59 @@
     <data noupdate="1">
         <record id="hr_applicant_create_user_mail_template" model="mail.template">
             <field name="name">[Recruitment] Profile has been create code</field>
-            <field name="email_from">${ctx.get('email_from', '')}</field>
-            <field name="email_to">${ctx.get('email_to', '')}</field>
+<!--            <field name="email_from">${ctx.get('email_from', '')}</field>-->
+<!--            <field name="email_to">${ctx.get('email_to', '')}</field>-->
             <field name="model_id" ref="hr_recruitment.model_hr_applicant"/>
             <field name="subject">[Recruitment] Profile has been create code</field>
             <field name="body_html" type="xml">
-				<p>[Recruitment] Profile has been create code by ${ctx.get('user_create_code', '#')}</p>
-                <p><strong>Click <a href="${ctx.get('applicant_url', '#')}">Link</a> to view detail</strong></p>
+				<p>[Recruitment] Profile has been create code by <t t-out="object.user_create_code or ''"/></p>
+                <p>- Account name: <t t-out="object.applicant_user_code or ''"/></p>
+                <p>- Password: your National ID</p>
+                <p></p><p></p>
+                <a t-att-href="ctx.get('applicant_url')"
+                    style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;margin: 10px;">
+                    View Profile
+                </a>
+                <p></p><p></p>
+                <p>Thanks</p>
 			</field>
         </record>
         <record id="hr_contract_send_to_sign" model="mail.template">
             <field name="name">[Contract] Contract need to Sign</field>
-            <field name="email_from">${ctx.get('email_from', '')}</field>
-            <field name="email_to">${ctx.get('email_to', '')}</field>
-            <field name="model_id" ref="hr_recruitment.model_hr_applicant"/>
+            <field name="model_id" ref="hr_contract.model_hr_contract"/>
             <field name="subject">[Contract] Contract need to Sign</field>
             <field name="body_html" type="xml">
-				<p>Dear ${object.employee_id.user_id and object.employee_id.user_id.email or ''},</p>
+				<p>Dear <t t-out="object.employee_id.name or ''"/>,</p>
                 <br/>
-                <p>HR Department kindly to inform Mr/Ms Services Contract (${ctx.get('contract_type', '')}):</p>
-                <p>- Contract Number: ${ctx.get('contact_number', '')}</p>
-                <p>- Start Date : ${ctx.get('date_start', '')}</p>
-                <p>- Duration :${ctx.get('date_start', '')} - ${ctx.get('date_end', '')}</p>
-                <p>Mr/Ms please login using the following link below to view and sign before ${ctx.get('deadline_sign_date', '')} for the HR Department complete the necessary procedures.</p>
-                <p><strong><a href="${ctx.get('contract_link', '#')}">Link</a></strong></p>
-                <p>During the implementation, if there are any problems, please contact the HR Department (${ctx.get('smn_email_hr', '')}) for assistance. </p>
-                <p>Thanks Mr/Ms, </p>
+                <p>HR Department kindly to inform Mr/Ms Services Contract (<t t-out="object.contract_type_id.name or ''"/>):</p>
+                <p>- Contract Number: <t t-out="object.name or ''"/></p>
+                <p>- Start Date: <t t-out="object.date_start.strftime('%d/%m/%Y') or ''"/></p>
+                <p>- Duration: <t t-out="object.date_start.strftime('%d/%m/%Y') or ''"/> - <t t-out="object.date_end.strftime('%d/%m/%Y') or ''"/></p>
+                <p>Mr/Ms please login using the following link below to view and sign before <t t-out="object.deadline_sign_date.strftime('%d/%m/%Y') or ''"/> for the HR Department complete the necessary procedures.</p>
+                <p></p><p></p>
+                <a t-att-href="ctx.get('contract_link')"
+                    style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;margin: 10px;">
+                    View my Contract
+                </a>
+                <p></p><p></p>
+                <p>During the implementation, if there are any problems, please contact the HR Department (<t t-out="ctx.get('smn_email_hr') or not_available"/>) for assistance. </p>
+                <br/>
+                <p>Thanks Mr/Ms,</p>
                 <p>HR Department.</p>
 			</field>
         </record>
         <record id="contract_notify_about_expire" model="mail.template">
             <field name="name">[Contract] Contract about to expire</field>
-            <field name="email_from">${ctx.get('email_from', '')}</field>
-            <field name="email_to">${ctx.get('email_to', '')}</field>
-            <field name="model_id" ref="hr_recruitment.model_hr_applicant"/>
+<!--            <field name="email_from">${ctx.get('email_from', '')}</field>-->
+<!--            <field name="email_to">${ctx.get('email_to', '')}</field>-->
+            <field name="model_id" ref="hr_contract.model_hr_contract"/>
             <field name="subject">[Contract] Contract about to expire</field>
             <field name="body_html" type="xml">
 				<p>Dear Mr/Ms,</p>
                 <br/>
                 <p>The contracts below have 15 days left to expire :</p>
-                <p>- Contract Number: ${ctx.get('list_contract_name', '')}</p>
-                <p>Thanks Mr/Ms, </p>
+                <p>- Contract Number: <t t-out="ctx.get('list_contract_name') or not_available"/></p>
+                <p>Thanks Mr/Ms,</p>
 			</field>
         </record>
     </data>

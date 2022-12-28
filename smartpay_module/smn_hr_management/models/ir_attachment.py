@@ -13,7 +13,7 @@ class IrAttachment(models.Model):
         for rcs in self:
             if rcs.res_model and rcs.res_model == 'hr.applicant' and rcs.res_id:
                 applicant_id = self.env['hr.applicant'].browse(int(rcs.res_id))
-                if applicant_id.stage_id.code != 'new' and applicant_id.active:
+                if applicant_id.stage_id and applicant_id.stage_id.code != 'new' and applicant_id.active:
                     raise UserError("You can delete attach file when Stage of HR Applicant stage is New")
         return super(IrAttachment, self).unlink()
 

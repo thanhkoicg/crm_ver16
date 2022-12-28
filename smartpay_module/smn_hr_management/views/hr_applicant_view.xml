@@ -12,42 +12,42 @@
             <xpath expr="//group//field[@name='email_from']" position="before">
                 <label for="nid" string="National ID"/>
                 <div class="o_row">
-                    <field name="nid" required="1" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}"/>
-                    <field name="nid_issue_date" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}" placeholder="Issue Date" />
-                    <field name="nid_issue_place_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}" options="{'no_open': True, 'no_quick_create': True}" placeholder="Issue Place" />
+                    <field name="nid" required="1" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False), ('status_code', '!=', False)]}"/>
+                    <field name="nid_issue_date" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" placeholder="Issue Date" />
+                    <field name="nid_issue_place_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" options="{'no_open': True, 'no_quick_create': True}" placeholder="Issue Place" />
                 </div>
                 <label for="gender" string="Gender"/>
                 <div class="o_row">
-                    <field name="gender" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}"/>
-                    <field name="birthday" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}" placeholder="Birthday"/>
+                    <field name="gender" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}"/>
+                    <field name="birthday" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" placeholder="Birthday"/>
                 </div>
                 <label for="address" string="Address"/>
                 <div>
                     <div class="o_address_format">
-                        <field name="address" placeholder="Street..." class="o_address_street" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}"/>
-                        <field name="province_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}" placeholder="Province"  class="o_address_country" options="{'no_open': True, 'no_quick_create': True}"/>
-                        <field name="district_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}" class="o_address_state"  domain="[('province_id', '=', province_id)]" placeholder="District" options="{'no_open': True, 'no_quick_create': True}"/>
-                        <field name="ward_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}" placeholder="Ward"  domain="[('district_id', '=', district_id)]" class="o_address_city" options="{'no_open': True, 'no_quick_create': True}"/>
+                        <field name="address" placeholder="Street..." class="o_address_street" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}"/>
+                        <field name="province_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" placeholder="Province"  class="o_address_country" options="{'no_open': True, 'no_quick_create': True}"/>
+                        <field name="district_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" class="o_address_state"  domain="[('province_id', '=', province_id)]" placeholder="District" options="{'no_open': True, 'no_quick_create': True}"/>
+                        <field name="ward_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" placeholder="Ward"  domain="[('district_id', '=', district_id)]" class="o_address_city" options="{'no_open': True, 'no_quick_create': True}"/>
                     </div>
                 </div>
-                <field name="is_same_address" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}"/>
+                <field name="is_same_address" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}"/>
                 <label for="current_address" string="Current Address"/>
                 <div>
                     <div class="o_address_format">
-                        <field name="current_address" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}" placeholder="Street..." class="o_address_street" />
-                        <field name="current_province_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}" placeholder="Province"  class="o_address_country" options="{'no_open': True, 'no_quick_create': True}"/>
-                        <field name="current_district_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}" class="o_address_state"  domain="[('province_id', '=', current_province_id)]" placeholder="District" options="{'no_open': True, 'no_quick_create': True}"/>
-                        <field name="current_ward_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}" placeholder="Ward"  domain="[('district_id', '=', current_district_id)]" class="o_address_city" options="{'no_open': True, 'no_quick_create': True}"/>
+                        <field name="current_address" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" placeholder="Street..." class="o_address_street" />
+                        <field name="current_province_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" placeholder="Province"  class="o_address_country" options="{'no_open': True, 'no_quick_create': True}"/>
+                        <field name="current_district_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" class="o_address_state"  domain="[('province_id', '=', current_province_id)]" placeholder="District" options="{'no_open': True, 'no_quick_create': True}"/>
+                        <field name="current_ward_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" placeholder="Ward"  domain="[('district_id', '=', current_district_id)]" class="o_address_city" options="{'no_open': True, 'no_quick_create': True}"/>
                     </div>
                 </div>
 
             </xpath>
             <xpath expr="//group//field[@name='user_id']" position="after">
-<!--                <field name="responsible_user_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>-->
-                <field name="create_uid" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}" string="Request by" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>
-                <field name="bank_account" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}"/>
-                <field name="bank_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>
-                <field name="bank_branch_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>
+<!--                <field name="responsible_user_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>-->
+                <field name="create_uid" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" string="Request by" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>
+                <field name="bank_account" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}"/>
+                <field name="bank_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>
+                <field name="bank_branch_id" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>
                 <field name="confirm_user_id" attrs="{'readonly': [('status_code', '!=', '1')]}" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>
                 <field name="create_code_user_id" attrs="{'readonly': [('status_code', '!=', '1')]}" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"/>
                 <field name="applicant_user_id" options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}" attrs="{'readonly': [('status_code', '!=', '1')]}"/>
@@ -58,7 +58,7 @@
             </xpath>
             <xpath expr="//sheet//notebook//page" position="replace">
                 <page name="hr_document_line" string="Documents">
-                    <field name="attachment_ids" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile'))]}">
+                    <field name="attachment_ids" attrs="{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}">
                         <tree create="false" delete="false" editable="bottom">
                             <field name="create_uid" invisible="1"/>
                             <field name="hr_document_type_id" string="Document Type" attrs="{'readonly': [('create_uid', '!=', '1')]}" options="{'create_edit': False, 'no_open': True}"/>
@@ -97,9 +97,9 @@
             </xpath>
             <xpath expr="//header//button[@name='create_employee_from_applicant']" position="after">
                 <button string="Submit" name="act_submit" type="object"
-                        attrs="{'invisible': [('status_code', '!=', 'new')], 'readonly': [('status_code', 'not in', ('new','update_profile'))]}"/>
+                        attrs="{'invisible': [('status_code', '!=', 'new')], 'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}"/>
                 <button string="Send to HR" name="act_send_to_hr" type="object"
-                        attrs="{'invisible': [('status_code', 'not in', ('submit', 'update_profile'))]}"/>
+                        attrs="{'invisible': [('status_code', 'not in', ('submit', 'update_profile')), ('status_code', '!=', False)]}"/>
                 <button string="Update Profile" name="act_update_profile" type="object"
                         attrs="{'invisible': [('status_code', '!=', 'review')]}"/>
                 <button string="Interview" name="act_interview" type="object"
@@ -117,40 +117,40 @@
             </xpath>
 
             <xpath expr="//sheet//field[@name='name']" position="attributes">
-                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile'))]}</attribute>
+                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//sheet//field[@name='partner_name']" position="attributes">
-                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile'))]}</attribute>
+                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//group//field[@name='email_from']" position="attributes">
-                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile'))]}</attribute>
+                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//group//field[@name='type_id']" position="attributes">
-                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile'))]}</attribute>
+                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//group//field[@name='partner_phone']" position="attributes">
-                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile'))]}</attribute>
+                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//group//field[@name='linkedin_profile']" position="attributes">
-                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile'))]}</attribute>
+                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//group//field[@name='job_id']" position="attributes">
-                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile'))]}</attribute>
+                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//group//field[@name='department_id']" position="attributes">
-                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile'))]}</attribute>
+                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//group//field[@name='salary_expected']" position="attributes">
-                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile'))]}</attribute>
+                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//group//field[@name='salary_proposed']" position="attributes">
-                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile'))]}</attribute>
+                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//group//field[@name='availability']" position="attributes">
-                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile'))]}</attribute>
+                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
             <xpath expr="//group//field[@name='user_id']" position="attributes">
-                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile'))]}</attribute>
+                <attribute name="attrs">{'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}</attribute>
             </xpath>
         </field>
     </record>
