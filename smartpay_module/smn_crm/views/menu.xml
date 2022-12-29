@@ -74,6 +74,7 @@
               action="action_crm_res_users"/>
     <menuitem id="menu_sftp"
               name="SFTP"
+              groups="base.group_system"
               parent="menu_admin_custom_root" sequence="2"
               action="action_sftp_config"/>
 

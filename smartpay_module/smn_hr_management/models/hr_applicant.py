@@ -216,6 +216,7 @@ class HrApplicant(models.Model):
             'create_employee': True,
             'email': self.email_from or 'missemail@mail',
             'group_profile_id': group_id.id,
+            # 'groups_id': [(6, 0, [group_id.id])],
             'image_1920': False
         }
         place_of_birth = "%s, %s, %s, %s" % (self.address, self.ward_id.name, self.district_id.name, self.province_id.name)
