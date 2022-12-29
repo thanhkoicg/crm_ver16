@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
-import logging
-
 from odoo import fields, models, api, _, SUPERUSER_ID
 from odoo.exceptions import UserError
 from datetime import datetime
-
-
-_logger = logging.getLogger(__name__)
 
 
 class CrmLead(models.Model):
@@ -217,24 +212,6 @@ class CrmLead(models.Model):
                     raise UserError(_("You can delete when status is New, please cancel Lead"))
         return super(CrmLead, self).unlink()
 
-    # def _send_api_email_notify(self, content):
-    #     ir_config_param = self.env['ir.config_parameter'].sudo()
-    #     flag_check_active = ir_config_param.get_param('smn_flag_check_active_send_email_api')
-    #     if int(flag_check_active) != 1:
-    #         return
-    #     email_to = []
-    #     mail_template = self.env.ref('smn_crm.mail_template_api_notify')
-    #     email_from = ir_config_param.get_param('smn_email_system_for_notify')
-    #     email_user_receive = ir_config_param.get_param('smn_email_user_receive_notify')
-    #     if email_user_receive:
-    #         email_to += email_user_receive.split(',')
-    #     content.update({
-    #         'email_from': email_from,
-    #         'email_to': ','.join(email_to)
-    #     })
-    #     mail_template.with_user(SUPERUSER_ID).with_context(content).send_mail(self.id, force_send=True)
-    #     return
-
     def button_click_to_call_mobile(self):
         self.ensure_one()
         if not self.phone:
@@ -289,3 +266,36 @@ class CrmLead(models.Model):
         stage_id = self._get_stage_id('HSH')
         self.stage_id = stage_id.id
         return
+
+    def _cron_import_lead_sftp(self):
+        return
+
+    def _cron_export_lead_following_campaign(self):
+        return
+
+    @api.model
+    def _cron_start_campaign(self):
+        current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        marketing_campaign_obj = self.env['crm.marketing.campaign']
+        campaigns = marketing_campaign_obj.search([
+            ('state', '=', 'approved'),
+            ('start_date', '<=', current_date), '|',
+            ('end_date', '>=', current_date),
+            ('end_date', '=', False)])
+        if campaigns:
+            campaigns.write({'state': 'running'})
+
+    @api.model
+    def _cron_stop_campaign(self):
+        current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        marketing_campaign_obj = self.env['crm.marketing.campaign']
+        campaigns = marketing_campaign_obj.search([
+            ('state', '=', 'running'),
+            ('end_date', '<', current_date)])
+        if campaigns:
+            for campaign in campaigns:
+                segments = campaign.mapped('segment_ids').filtered(
+                    lambda segment: segment.state == 'running')
+                if segments:
+                    segments.write({'state': 'done'})
+            campaigns.write({'state': 'done'})

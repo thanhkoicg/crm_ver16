@@ -20,6 +20,7 @@ This module allows you to manage API for Partner.
     'data': [
         'security/ir.model.access.csv',
         'data/ir_sequence.xml',
+        'data/ir_cron.xml',
         'data/ir_config_parameter.xml',
         'data/mail_template.xml',
         'views/res_bank_view.xml',

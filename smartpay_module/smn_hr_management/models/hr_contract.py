@@ -113,7 +113,8 @@ class HrContract(models.Model):
             contract.status = 'expired'
         return
 
-    def cron_contract_notify_deadline_need_to_sign(self):
+    @api.model
+    def _cron_contract_notify_deadline_need_to_sign(self):
         today = fields.date.today()
         contracts = self.search([('status', '=', 'unsigned')])
         for contract in contracts:
@@ -130,7 +131,8 @@ class HrContract(models.Model):
                         contract.remind_datetime = today + timedelta(days=3)
         return
 
-    def cron_contract_notify_about_expire(self):
+    @api.model
+    def _cron_contract_notify_about_expire(self):
         today = fields.date.today() - timedelta(days=15)
         contracts = self.search([('status', '=', 'signed'), ('date_end', '=', today)])
         ctr_name = []

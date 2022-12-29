@@ -1,16 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data noupdate="1">
-        <record forcecreate="True" id="ir_cron_srecall_api_create_update_lead" model="ir.cron">
-            <field name="name">CRM Lead: Recall API Create - Update</field>
+        <record forcecreate="True" id="smn_cron_import_lead_sftp" model="ir.cron">
+            <field name="name">Lead: Import Lead by SFTP</field>
             <field name="model_id" ref="model_crm_lead"/>
             <field name="state">code</field>
-            <field name="code">model.cron_recall_api_create_update_lead()</field>
-            <field eval="False" name="active" />
-            <field name="interval_number">30</field>
-            <field name="interval_type">minutes</field>
+            <field name="code">model._cron_import_lead_sftp()</field>
+            <field eval="False" name="active"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field eval="False" name="doall" />
+            <field eval="False" name="doall"/>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(hours=2)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record forcecreate="True" id="smn_cron_export_lead_following_campaign" model="ir.cron">
+            <field name="name">Lead: Export Lead following Campaign</field>
+            <field name="model_id" ref="model_crm_lead"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_export_lead_following_campaign()</field>
+            <field eval="False" name="active"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(hours=2)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record forcecreate="True" id="smn_cron_start_campaign" model="ir.cron">
+            <field name="name">Lead: Start Campaign</field>
+            <field name="model_id" ref="model_crm_lead"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_start_campaign()</field>
+            <field eval="False" name="active"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(hours=2)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record forcecreate="True" id="smn_cron_stop_campaign" model="ir.cron">
+            <field name="name">Lead: Stop Campaign</field>
+            <field name="model_id" ref="model_crm_lead"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_stop_campaign()</field>
+            <field eval="False" name="active"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(hours=2)).strftime('%Y-%m-%d %H:%M:%S')"/>
         </record>
     </data>
 </odoo>

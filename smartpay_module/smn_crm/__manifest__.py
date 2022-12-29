@@ -24,7 +24,7 @@ This module allows you to manage API for Partner.
         'security/ir.model.access.csv',
         'data/res_groups.xml',
         # 'data/mail_template.xml',
-        # 'data/ir_cron.xml',
+        'data/ir_cron.xml',
         'views/res_groups_view.xml',
         'views/res_users_view.xml',
         # 'views/res_partner_view.xml',
