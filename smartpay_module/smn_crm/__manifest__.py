@@ -15,11 +15,14 @@ This module allows you to manage API for Partner.
         'crm',
         'as_vn_address',
         'sale',
-        'sales_team'
+        'sales_team',
+        'hr',
+        'hr_contract',
+        'hr_recruitment'
     ],
     'data': [
         'security/ir.model.access.csv',
-        # 'data/ir_config_parameter.xml',
+        'data/res_groups.xml',
         # 'data/mail_template.xml',
         # 'data/ir_cron.xml',
         'views/res_groups_view.xml',

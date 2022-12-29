@@ -1,89 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data noupdate="1">
-        <record id="group_hr_user" model="res.groups">
-            <field name="name">Functional Admin</field>
+    <data noupdate="0">
+        <record id="smn_crm.module_category_profile_group" model="ir.module.category">
+            <field name="name">Profile Group</field>
+            <field name="description">Define groups for Profile.</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="smn_group_sales_agent" model="res.groups">
+            <field name="name">Sales Agent</field>
+<!--            <field name="category_id" ref="smn_crm.module_category_profile_group" />-->
+            <field name="is_profile_group" eval="True" />
             <field name="implied_ids" eval="[(6, 0, [
-                ref('base.group_private_addresses'),
+                ref('sales_team.group_sale_salesman'),
                 ref('base.group_user')])]"/>
         </record>
-
-        <record id="trobz_base.profile_functional_admin" model="res.groups">
-            <field name="implied_ids"
-                eval="[
-                    (4, ref('group_sales_operation_manager')),
-                    (4, ref('group_sales_configuration_manager')),
-                    (4, ref('group_product_configuration_manager')),
-                    (4, ref('group_base_configuration_manager')),
-                    (4, ref('group_hr_operation_manager')),
-                    (4, ref('group_hr_configuration_manager')),
-                    (4, ref('group_stock_operation_manager')),
-                    (4, ref('group_stock_configuration_manager')),
-                    (4, ref('group_asset_operation_manager')),
-                    (4, ref('website.group_website_designer')),
-                    (4, ref('stock.group_stock_manager')),
-                    (4, ref('group_hr_recuitment_manager')),
-                    (4, ref('group_asset_configuration_manager')),
-                    (4, ref('survey.group_survey_manager')),
-                    (4, ref('knowledge.group_document_user'))]"/>
+        <record id="smn_group_sales_manager" model="res.groups">
+            <field name="name">Sales Manager</field>
+<!--            <field name="category_id" ref="smn_crm.module_category_profile_group" />-->
+            <field name="is_profile_group" eval="True" />
+            <field name="implied_ids" eval="[(6, 0, [
+                ref('sales_team.group_sale_salesman'),
+                ref('sales_team.group_sale_salesman_all_leads')])]"/>
+            <field name="comment">The same Sale All Document.</field>
         </record>
-
-        <!-- Functional Admin & HR Profile -->
-        <record id="profile_func_admin_hr" model="res.groups">
-            <field name="name">Functional Admin &amp; HR</field>
-            <field name="is_profile" eval="True" />
-            <field name="category_id" ref="user_profile.module_category_profile" />
+        <record id="smn_group_function_admin" model="res.groups">
+            <field name="name">Function Admin</field>
+<!--            <field name="category_id" ref="smn_crm.module_category_profile_group" />-->
+            <field name="is_profile_group" eval="True" />
+            <field name="implied_ids" eval="[(6, 0, [
+                ref('sales_team.group_sale_manager')])]"/>
+            <field name="comment">The same Sale Manager.</field>
+        </record>
+        <record id="smn_group_function_admin_hr" model="res.groups">
+            <field name="name">Function Admin &amp; HR</field>
+            <field name="is_profile_group" eval="True" />
+<!--            <field name="category_id" ref="smn_crm.module_category_profile_group" />-->
             <field name="implied_ids"
-                eval="[(6, 0, [ref('trobz_base.profile_functional_admin'),
-                    ref('group_sales_operation_manager'),
-                    ref('group_sales_configuration_manager'),
-                    ref('group_product_configuration_manager'),
-                    ref('group_base_configuration_manager'),
-                    ref('group_hr_operation_manager'),
-                    ref('group_hr_configuration_manager'),
-                    ref('group_hr_payroll_manager'),
-                    ref('group_stock_operation_manager'),
-                    ref('group_stock_configuration_manager'),
-                    ref('group_asset_operation_manager'),
-                    ref('group_asset_configuration_manager'),
-                    ref('base.group_multi_company'),
-                    ref('base.group_multi_currency'),
-                    ref('base.group_partner_manager'),
-                    ref('website.group_website_publisher'),
-                    ref('website.group_website_designer'),
-                    ref('event.group_event_user'),
-                    ref('event.group_event_manager'),
-                    ref('hr.group_hr_user'),
+                eval="[(6, 0, [
                     ref('hr.group_hr_manager'),
-                    ref('hr.group_hr_attendance'),
-                    ref('marketing_campaign.group_lead_automation_user'),
-                    ref('marketing_campaign.group_lead_automation_manager'),
-                    ref('mass_mailing.group_mass_mailing_user'),
-                    ref('queue_job.group_queue_job_manager'),
-                    ref('sales_team.group_sale_salesman'),
-                    ref('sales_team.group_sale_salesman_all_leads'),
-                    ref('sales_team.group_sale_manager'),
-                    ref('survey.group_survey_user'),
-                    ref('survey.group_survey_manager'),
-                    ref('account.group_account_invoice'),
-                    ref('account.group_account_user'),
-                    ref('account.group_account_manager'),
-                    ref('connector.group_connector_manager'),
-                    ref('hr_attendance.group_hr_attendance_user'),
-                    ref('hr_attendance.group_hr_attendance_manager'),
-                    ref('im_livechat.im_livechat_group_user'),
-                    ref('im_livechat.im_livechat_group_manager'),
-                    ref('trobz_base.group_configure_user'),
-                    ref('smartnet_module.group_sales_operation_manager'),
-                    ref('smartnet_module.group_sales_configuration_manager'),
-                    ref('smartnet_module.group_product_configuration_manager'),
-                    ref('smartnet_module.group_base_configuration_manager'),
-                    ref('stock.group_stock_manager'),
-                    ref('group_hr_recuitment_manager'),
-                    ref('base.group_user'),
-                    ref('survey.group_survey_manager'),
-                    ref('knowledge.group_document_user')])]"/>
+                    ref('hr_contract.group_hr_contract_manager'),
+                    ref('hr_contract.group_hr_contract_employee_manager'),
+                    ref('hr_recruitment.group_hr_recruitment_manager')
+                    ])]"/>
 
         </record>
     </data>
+<!--    <data noupdate="1">-->
+<!--        <record id="crm_rule_all_salesteam" model="ir.rule">-->
+<!--            <field name="name">All Salesteam</field>-->
+<!--            <field ref="sales_team.model_crm_team" name="model_id"/>-->
+<!--            <field name="domain_force">[(1,'=',1)]</field>-->
+<!--            <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman_all_leads'))]"/>-->
+<!--        </record>-->
+
+<!--        <record model="ir.rule" id="sale_team_comp_rule">-->
+<!--            <field name="name">Sales Team multi-company</field>-->
+<!--            <field name="model_id" ref="model_crm_team"/>-->
+<!--            <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>-->
+<!--        </record>-->
+
+<!--        <record id="base.default_user" model="res.users">-->
+<!--            <field name="groups_id" eval="[(4,ref('sales_team.group_sale_manager'))]"/>-->
+<!--        </record>-->
+<!--    </data>-->
 </odoo>

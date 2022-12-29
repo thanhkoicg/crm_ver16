@@ -143,7 +143,7 @@ class HrApplicant(models.Model):
         self.stage_id = stage_id.id
         return
 
-    @api.model
+    @api.model_create_multi
     def create(self, values):
         stage_new_id = self.env['hr.recruitment.stage'].search([('code', '=', 'new')])
         values['stage_id'] = stage_new_id.id if stage_new_id else False
