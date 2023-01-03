@@ -14,8 +14,8 @@
             <field name="nextcall" eval="(DateTime.now() + timedelta(hours=2)).strftime('%Y-%m-%d %H:%M:%S')"/>
         </record>
         <record forcecreate="True" id="smn_cron_export_lead_following_campaign" model="ir.cron">
-            <field name="name">Lead: Export Lead following Campaign</field>
-            <field name="model_id" ref="model_crm_lead"/>
+            <field name="name">Campaign: Export Lead following Campaign</field>
+            <field name="model_id" ref="model_crm_marketing_campaign"/>
             <field name="state">code</field>
             <field name="code">model._cron_export_lead_following_campaign()</field>
             <field eval="False" name="active"/>
@@ -26,8 +26,8 @@
             <field name="nextcall" eval="(DateTime.now() + timedelta(hours=2)).strftime('%Y-%m-%d %H:%M:%S')"/>
         </record>
         <record forcecreate="True" id="smn_cron_start_campaign" model="ir.cron">
-            <field name="name">Lead: Start Campaign</field>
-            <field name="model_id" ref="model_crm_lead"/>
+            <field name="name">Campaign: Start Campaign</field>
+            <field name="model_id" ref="model_crm_marketing_campaign"/>
             <field name="state">code</field>
             <field name="code">model._cron_start_campaign()</field>
             <field eval="False" name="active"/>
@@ -38,8 +38,8 @@
             <field name="nextcall" eval="(DateTime.now() + timedelta(hours=2)).strftime('%Y-%m-%d %H:%M:%S')"/>
         </record>
         <record forcecreate="True" id="smn_cron_stop_campaign" model="ir.cron">
-            <field name="name">Lead: Stop Campaign</field>
-            <field name="model_id" ref="model_crm_lead"/>
+            <field name="name">Campaign: Stop Campaign</field>
+            <field name="model_id" ref="model_crm_marketing_campaign"/>
             <field name="state">code</field>
             <field name="code">model._cron_stop_campaign()</field>
             <field eval="False" name="active"/>

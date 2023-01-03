@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="sftp.config" id="import_lead_sftp">
+            <field name="name">Import Lead by SFTP by day</field>
+            <field name="host">0.0.0.0</field>
+            <field name="port">22</field>
+            <field name="sftp_user">user</field>
+            <field name="sftp_password">password</field>
+            <field name="root_folder">/</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from odoo import fields, models, api, _, SUPERUSER_ID
 from odoo.exceptions import UserError
-from datetime import datetime
+from datetime import datetime, timedelta
+from odoo.tools.safe_eval import safe_eval
+import base64
+import xlrd
 
 
 class CrmLead(models.Model):
@@ -267,35 +270,182 @@ class CrmLead(models.Model):
         self.stage_id = stage_id.id
         return
 
+    @api.model
     def _cron_import_lead_sftp(self):
+        sftp_config = self.env.ref('smn_crm.import_lead_sftp')
+        remote_dir = sftp_config.root_folder
+        with sftp_config.sftp_connection(test=False) as remote:
+            try:
+                dir_items = remote.listdir(remote_dir)
+                for file_name in dir_items:
+                    remote_path = remote_dir + '/' + file_name
+                    if not remote.isfile(remote_path):
+                        dir_items.remove(file_name)
+            except Exception as e:
+                self.env['smn.api.history'].sudo().create({
+                    'name': '_cron_import_lead_sftp',
+                    'note': 'Error: %s' % e,
+                    'status': 'False'
+                })
+            server_name = sftp_config.name
+            for file_name in dir_items:
+                file_path = remote_dir + '/' + file_name
+                data = remote.open(file_path, 'rb').read()
+                self.with_delay(description="Download file from sftp").download_sftp_file(
+                    sftp_config, file_path, file_name, server_name, 'action_import_lead_by_sftp')
         return
 
-    def _cron_export_lead_following_campaign(self):
+    def download_file_from_sftp(self, sftp_config, file_path, file_name, server_name, function_name):
+        with sftp_config.sftp_connection(test=False) as remote:
+            try:
+                data = remote.open(file_path, 'rb').read()
+                if not data:
+                    print()
+                if sftp_config.is_encrypted_file:
+                    data = sftp_config.decrypt_data(data, file_name)
+                if not data:
+                    print()
+                attachment = self.env['ir.attachment'].create({
+                    'name': file_name,
+                    'datas_fname': file_name,
+                    'datas': data.encode('base64'),
+                    'type': 'binary'
+                })
+                callable_function = getattr(self.with_delay(description="%s: Import file %s to database."% (server_name, file_name)), function_name)
+                delayable = callable_function(attachment, server_name, file_name)
+                job = self.env['queue.job'].search(
+                    [('uuid', '=', delayable.uuid)], limit=1)
+                attachment.write({
+                    'res_model': 'queue.job',
+                    'res_id': job.id,
+                })
+                if attachment:
+                    remote.remove(file_path)
+            except Exception as e:
+                self.env['smn.api.history'].sudo().create({
+                    'name': 'download_file_from_sftp',
+                    'note': 'Error: %s' % e,
+                    'status': 'False'
+                })
         return
 
-    @api.model
-    def _cron_start_campaign(self):
-        current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        marketing_campaign_obj = self.env['crm.marketing.campaign']
-        campaigns = marketing_campaign_obj.search([
-            ('state', '=', 'approved'),
-            ('start_date', '<=', current_date), '|',
-            ('end_date', '>=', current_date),
-            ('end_date', '=', False)])
-        if campaigns:
-            campaigns.write({'state': 'running'})
+    def action_import_lead_by_sftp(self, attachment, server_name, file_name):
+        try:
+            if (not attachment) or (not attachment.datas):
+                return "No attachment found"
+            # data = base64.decodestring(attachment.datas)b64decode
+            data = base64.b64decode(attachment.datas)
+            wb = xlrd.open_workbook(file_contents=data)
+            sheet = wb.sheet_by_index(0)
+            errors = []
+            sm_config = self.env['ir.config_parameter'].get_param('smn_config', {})
+            if not sm_config:
+                raise UserError('Cannot find smn_config parameter in your system!')
+            sm_config = safe_eval(sm_config)
+            expired_lead_days = sm_config['expired_lead_days']
+            for row_no in range(1, sheet.nrows):
+                row = sheet.row(row_no)
+                name = row[0].value
+                contact_name = row[1].value
+                if type(row[2].value) is float:
+                    id_no = str(int(row[2].value))
+                else:
+                    id_no = row[2].value and str(row[2].value) or ''
+                if type(row[3].value) is float:
+                    mobile = str(int(row[3].value))
+                else:
+                    mobile = row[3].value
+                marketing_campaign_name = row[4].value
+                sales_person_code = row[5].value
+                stage_name = row[6].value
+                lead_source = row[7].value
+                state_name = row[8].value
+                note = row[9].value
+                partner_code = row[10].value
+                user_code = row[11].value
+                title_action = row[12].value
+                street = row[13].value
+                if len(id_no) not in [9, 12]:
+                    row_errors = 'National ID %s is not valid' % (id_no,)
+                    errors.append({'Row %s:' % (row_no + 1): row_errors})
+                    continue
+                contact_id = self.env['res.partner'].search([('company_tax_code', '=', partner_code)])
+                if not contact_id:
+                    row_errors = 'Partner could not be found'
+                    errors.append({'Row %s' % (row_no + 1,): row_errors})
+                    continue
+                marketing_campaign_id = self.env['marketing.campaign'].search([('name', '=', marketing_campaign_name)],
+                                                                              limit=1)
+                res_user_id = self.env['res.users'].search([('code_partner_1', '=', sales_person_code)], limit=1)
+                res_user1_id = self.env['res.users'].search([('code', '=', user_code)], limit=1)
+                if res_user1_id:
+                    if stage_name and stage_name.encode('utf-8') in ('Tạo mới', 'Chưa gọi'):
+                        stage_name = 'Gọi lần 1'
+                stage_id = self.env['crm.stage'].search([('name', '=', stage_name)], limit=1)
+                next_activity_id = self.env['crm.activity'].search([('stage_id', '=', stage_id.id)],
+                                                                   order="sequence desc", limit=1)
+                state_id = self.env['res.country.state'].search([('name', '=', state_name)], limit=1)
+                source_id = False
+                if lead_source:
+                    source_id = self.env['utm.source'].search([('name', '=', lead_source)])
+                vals = {
+                    'name': name.replace("'", "''"),
+                    'contact_name': contact_name.replace("'", "''"),
+                    'id_no': id_no,
+                    'partner_id': contact_id.id,
+                    'user_id': res_user_id.id if res_user_id else 1,
+                    'state_id': state_id.id if state_id else 'NULL',
+                    'mobile': mobile,
+                    'marketing_camp_id': marketing_campaign_id.id if marketing_campaign_id else 'NULL',
+                    'note': note and note.replace("'", "''") or '',
+                    'responsible_user_id': res_user1_id.id if res_user1_id else 'NULL',
+                    'title_action': title_action,
+                    'next_activity_id': next_activity_id.id if next_activity_id else 'NULL',
+                    'street': street and street.replace("'", "''") or '',
+                    'source_id': source_id.id if source_id else 'NULL',
+                    'stage_id': stage_id.id if stage_id else 'NULL',
+                    'type': 'lead',
+                    'date_deadline': datetime.now() + timedelta(days=expired_lead_days),
+                    'create_date': datetime.now()
+                }
+                sql = u"""INSERT INTO crm_lead (
+                        name,contact_name,id_no,partner_id,user_id,state_id,mobile,marketing_camp_id,note,
+                        responsible_user_id,title_action,next_activity_id,street,source_id,stage_id,type,active,
+                        date_deadline,create_date
+                    )
+                    VALUES (
+                        '{name}','{contact_name}','{id_no}',{partner_id},{user_id},{state_id},'{mobile}',{marketing_camp_id},
+                        '{note}',{responsible_user_id},'{title_action}',{next_activity_id},'{street}',{source_id},
+                        {stage_id},'{type}',True,'{date_deadline}','{create_date}'
+                    ) RETURNING id""".format(**vals)
+                try:
+                    self._cr.execute(sql)
+                    lead_id = self._cr.fetchone()[0]
+                    if lead_id:
+                        self.env['crm.activity.history'].create({
+                            'responsible_user_id': res_user1_id,
+                            'activity_id': next_activity_id,
+                            'stage_id': stage_id,
+                            'lead_id': lead_id,
+                            'note': title_action
+                        })
+                    if row_no % 5 == 0:
+                        self._cr.commit()
+                except Exception as e:
+                    row_errors = e
+                    errors.append({'Row %s' % (row_no + 1,): row_errors})
+                    continue
+            if errors:
+                self.env['smn.api.history'].sudo().create({
+                    'name': 'action_import_lead_by_sftp',
+                    'note': 'Error: %s' % errors,
+                    'status': 'False'
+                })
+            return errors
+        except Exception as e:
+            self.env['smn.api.history'].sudo().create({
+                'name': 'action_import_lead_by_sftp',
+                'note': 'Error: %s' % e,
+                'status': 'False'
+            })
 
-    @api.model
-    def _cron_stop_campaign(self):
-        current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        marketing_campaign_obj = self.env['crm.marketing.campaign']
-        campaigns = marketing_campaign_obj.search([
-            ('state', '=', 'running'),
-            ('end_date', '<', current_date)])
-        if campaigns:
-            for campaign in campaigns:
-                segments = campaign.mapped('segment_ids').filtered(
-                    lambda segment: segment.state == 'running')
-                if segments:
-                    segments.write({'state': 'done'})
-            campaigns.write({'state': 'done'})
