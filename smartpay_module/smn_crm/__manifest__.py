@@ -18,11 +18,14 @@ This module allows you to manage API for Partner.
         'sales_team',
         'hr',
         'hr_contract',
-        'hr_recruitment'
+        'hr_recruitment',
+        'crm_sms'
     ],
     'data': [
         'security/ir.model.access.csv',
         'data/res_groups.xml',
+        'data/data_sftp_config.xml',
+        'data/ir_config_parameter.xml',
         # 'data/mail_template.xml',
         'data/ir_cron.xml',
         'views/res_groups_view.xml',

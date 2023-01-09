@@ -7,8 +7,8 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     # customer_of_partner = fields.Char()
-    is_api_partner = fields.Boolean(default=False)
-    code = fields.Char()
+    # is_api_partner = fields.Boolean(default=False)
+    code = fields.Char() # company_tax_code version 10
 
     def unlink(self):
         for rcs in self:

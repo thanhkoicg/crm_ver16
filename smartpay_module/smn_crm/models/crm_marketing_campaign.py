@@ -99,7 +99,7 @@ class CrmMarketingCampaign(models.Model):
             leads = self.env['crm.lead'].browse(list_id_leads)
             row = 1
             for lead in leads:
-                leadsheet.write(row, 0, lead.crm_id)
+                leadsheet.write(row, 0, lead.id)
                 leadsheet.write(row, 1, lead.mobile)
                 leadsheet.write(row, 2, lead.salesperson_code)
                 leadsheet.write(row, 3, lead.user_id and lead.user_id.name or '')
@@ -131,31 +131,20 @@ class CrmMarketingCampaign(models.Model):
                     LIMIT 1;
                 """ % lead.id
                 self._cr.execute(act_history_sqlnew)
-                act_history_idnew = self._cr.fetchone()
-                act_historynew = self.env['crm.activity.history'].browse(act_history_idnew)
-                if not act_historynew:
+                act_history_new = self._cr.fetchone()
+                act_history_new_id = self.env['crm.activity.history'].browse(act_history_new)
+                if not act_history_new_id:
                     continue
                 result = act_history.result_id or False
-                leadsheet.write(row, 6, result and result.name or '')
-                # Find value for Salestage and Leadstatus column
-                result_line_sql = """
-                    SELECT partner_sales_stage_id, partner_lead_status_id
-                    FROM crm_activity_result_line
-                    WHERE activity_id = %s and result_id = %s LIMIT 1;
-                """ % (act_history.activity_id.id, result.id)
-                self._cr.execute(result_line_sql)
-                result_line = self._cr.fetchone()
-                if result_line:
-                    sales_stage = self.env['partner.sales.stage'].browse(result_line[0]) or False
-                    lead_status = self.env['partner.lead.status'].browse(result_line[1]) or False
-                    leadsheet.write(row, 7, sales_stage and sales_stage.name or '')
-                    leadsheet.write(row, 8, lead_status and lead_status.name or '')
+                # leadsheet.write(row, 6, result and result.name or '')
+                # leadsheet.write(row, 7,  lead.stage_id and lead.stage_id.name or '')
+                leadsheet.write(row, 8, result and result.name or '')
                 leadsheet.write(row, 11, act_history.activity_id and act_history.activity_id.name or '')
                 leadsheet.write(row, 12, act_history.responsible_user_id and act_history.responsible_user_id.name or '')
                 leadsheet.write(row, 13, act_history.responsible_user_id and act_history.responsible_user_id.code or '')
                 leadsheet.write(row, 14, act_history.date_done and self.convert_to_local_timezone(act_history.date_done) or '')
                 leadsheet.write(row, 15, act_history.note and act_history.note or '')
-                leadsheet.write(row, 16, act_historynew.note and act_historynew.note or '')
+                leadsheet.write(row, 16, act_history_new_id.note and act_history_new_id.note or '')
                 leadsheet.write(row, 17, lead.marketing_camp_id and lead.marketing_camp_id.name or '')
                 row += 1
         workbook.close()

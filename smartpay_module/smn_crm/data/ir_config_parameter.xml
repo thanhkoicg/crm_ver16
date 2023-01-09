@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data noupdate="1">
-        <record model="ir.config_parameter" id="smn_flag_check_active_send_email_api">
-            <field name="key">smn_flag_check_active_send_email_api</field>
-            <field name="value">1</field>
-        </record>
-        <record model="ir.config_parameter" id="smn_email_system_for_notify">
-            <field name="key">smn_email_system_for_notify</field>
-            <field name="value">test@mail</field>
+        <record id="config_smn_config" model="ir.config_parameter">
+            <field name="key">smn_config</field>
+            <field name="value">
+                {
+                'expired_lead_days': 15,
+                }
+            </field>
         </record>
     </data>
 </odoo>

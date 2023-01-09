@@ -44,7 +44,7 @@ class CrmLead(models.Model):
 
     sale_person_code = fields.Char(related='user_id.login')
     is_same_address = fields.Boolean(default=False, string='Same as Address')
-    # campaign_id = fields.Char()
+    marketing_campaign_id = fields.Many2one('crm.marketing.campaign', tracking=True)
 
     @api.depends('stage_id', 'activity_id', 'activity_result_id')
     def _compute_history_count(self):
@@ -348,9 +348,9 @@ class CrmLead(models.Model):
                 name = row[0].value
                 contact_name = row[1].value
                 if type(row[2].value) is float:
-                    id_no = str(int(row[2].value))
+                    nic_number = str(int(row[2].value))
                 else:
-                    id_no = row[2].value and str(row[2].value) or ''
+                    nic_number = row[2].value and str(row[2].value) or ''
                 if type(row[3].value) is float:
                     mobile = str(int(row[3].value))
                 else:
@@ -358,64 +358,62 @@ class CrmLead(models.Model):
                 marketing_campaign_name = row[4].value
                 sales_person_code = row[5].value
                 stage_name = row[6].value
-                lead_source = row[7].value
+                # lead_source = row[7].value
                 state_name = row[8].value
-                note = row[9].value
+                description = row[9].value
                 partner_code = row[10].value
-                user_code = row[11].value
-                title_action = row[12].value
+                assign_user = row[11].value
+                # title_action = row[12].value
                 street = row[13].value
-                if len(id_no) not in [9, 12]:
-                    row_errors = 'National ID %s is not valid' % (id_no,)
+                if len(nic_number) not in [9, 12]:
+                    row_errors = 'National ID %s is not valid' % (nic_number,)
                     errors.append({'Row %s:' % (row_no + 1): row_errors})
                     continue
-                contact_id = self.env['res.partner'].search([('company_tax_code', '=', partner_code)])
+                contact_id = self.env['res.partner'].search([('code', '=', partner_code)])
                 if not contact_id:
                     row_errors = 'Partner could not be found'
                     errors.append({'Row %s' % (row_no + 1,): row_errors})
                     continue
-                marketing_campaign_id = self.env['marketing.campaign'].search([('name', '=', marketing_campaign_name)],
+                marketing_campaign_id = self.env['crm.marketing.campaign'].search([('name', '=', marketing_campaign_name)],
                                                                               limit=1)
-                res_user_id = self.env['res.users'].search([('code_partner_1', '=', sales_person_code)], limit=1)
-                res_user1_id = self.env['res.users'].search([('code', '=', user_code)], limit=1)
-                if res_user1_id:
+                user_id = self.env['res.users'].search([('login', '=', sales_person_code)], limit=1)
+                assign_user_id = self.env['res.users'].search([('login', '=', assign_user)], limit=1)
+                if assign_user_id:
                     if stage_name and stage_name.encode('utf-8') in ('Tạo mới', 'Chưa gọi'):
                         stage_name = 'Gọi lần 1'
                 stage_id = self.env['crm.stage'].search([('name', '=', stage_name)], limit=1)
                 next_activity_id = self.env['crm.activity'].search([('stage_id', '=', stage_id.id)],
                                                                    order="sequence desc", limit=1)
                 state_id = self.env['res.country.state'].search([('name', '=', state_name)], limit=1)
-                source_id = False
-                if lead_source:
-                    source_id = self.env['utm.source'].search([('name', '=', lead_source)])
+                # source_id = False
+                # if lead_source:
+                #     source_id = self.env['utm.source'].search([('name', '=', lead_source)])
                 vals = {
                     'name': name.replace("'", "''"),
                     'contact_name': contact_name.replace("'", "''"),
-                    'id_no': id_no,
+                    'nic_number': nic_number,
                     'partner_id': contact_id.id,
-                    'user_id': res_user_id.id if res_user_id else 1,
+                    'user_id': user_id.id if user_id else 1,
                     'state_id': state_id.id if state_id else 'NULL',
                     'mobile': mobile,
-                    'marketing_camp_id': marketing_campaign_id.id if marketing_campaign_id else 'NULL',
-                    'note': note and note.replace("'", "''") or '',
-                    'responsible_user_id': res_user1_id.id if res_user1_id else 'NULL',
-                    'title_action': title_action,
+                    'marketing_campaign_id': marketing_campaign_id.id if marketing_campaign_id else 'NULL',
+                    'description': description and description.replace("'", "''") or '',
+                    'assign_user_id': assign_user_id.id if assign_user_id else 'NULL',
                     'next_activity_id': next_activity_id.id if next_activity_id else 'NULL',
                     'street': street and street.replace("'", "''") or '',
-                    'source_id': source_id.id if source_id else 'NULL',
                     'stage_id': stage_id.id if stage_id else 'NULL',
                     'type': 'lead',
                     'date_deadline': datetime.now() + timedelta(days=expired_lead_days),
                     'create_date': datetime.now()
                 }
                 sql = u"""INSERT INTO crm_lead (
-                        name,contact_name,id_no,partner_id,user_id,state_id,mobile,marketing_camp_id,note,
-                        responsible_user_id,title_action,next_activity_id,street,source_id,stage_id,type,active,
+                        name,contact_name,nic_number,partner_id,user_id,state_id,mobile,marketing_campaign_id,description,
+                        assign_user_id,next_activity_id,street,stage_id,type,active,
                         date_deadline,create_date
                     )
                     VALUES (
-                        '{name}','{contact_name}','{id_no}',{partner_id},{user_id},{state_id},'{mobile}',{marketing_camp_id},
-                        '{note}',{responsible_user_id},'{title_action}',{next_activity_id},'{street}',{source_id},
+                        '{name}','{contact_name}','{nic_number}',{partner_id},{user_id},{state_id},'{mobile}',{marketing_campaign_id},
+                        '{description}',{assign_user_id},{next_activity_id},'{street}',
                         {stage_id},'{type}',True,'{date_deadline}','{create_date}'
                     ) RETURNING id""".format(**vals)
                 try:
@@ -423,11 +421,11 @@ class CrmLead(models.Model):
                     lead_id = self._cr.fetchone()[0]
                     if lead_id:
                         self.env['crm.activity.history'].create({
-                            'responsible_user_id': res_user1_id,
+                            'responsible_user_id': assign_user_id,
                             'activity_id': next_activity_id,
                             'stage_id': stage_id,
                             'lead_id': lead_id,
-                            'note': title_action
+                            'note': description
                         })
                     if row_no % 5 == 0:
                         self._cr.commit()

@@ -10,5 +10,14 @@
             <field name="root_folder">/</field>
             <field name="active" eval="True"/>
         </record>
+        <record model="sftp.config" id="export_lead_sftp">
+            <field name="name">Export Lead by SFTP by day</field>
+            <field name="host">0.0.0.0</field>
+            <field name="port">22</field>
+            <field name="sftp_user">user</field>
+            <field name="sftp_password">password</field>
+            <field name="root_folder">/</field>
+            <field name="active" eval="True"/>
+        </record>
     </data>
 </odoo>
