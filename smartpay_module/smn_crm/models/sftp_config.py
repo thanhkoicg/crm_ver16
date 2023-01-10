@@ -14,7 +14,7 @@ class SftpConfig(models.Model):
     host = fields.Char(required=True, tracking=True)
     port = fields.Integer(required=True, tracking=True)
     sftp_user = fields.Char(required=True, tracking=True)
-    sftp_password = fields.Char(required=True, tracking=True)
+    sftp_password = fields.Char(required=True)
     root_folder = fields.Char(required=True,  tracking=True)
     is_encrypted_file = fields.Boolean()
     encryption_key = fields.Char()

@@ -41,10 +41,10 @@ class CrmMarketingCampaign(models.Model):
 
     @api.model
     def _cron_export_lead_following_campaign(self):
-        marketing_campaigns = self.search([('state', 'in', ['running', 'done']), ('partner_server_id', '!=', False)])
+        marketing_campaigns = self.search([('state', 'in', ['running', 'done']), ('partner_sftp_config_id', '!=', False)])
         xml_id = 'smn_crm.smn_cron_export_lead_following_campaign'
         scheduler_id = self.env.ref(xml_id)
-        for marketing_campaign in marketing_campaigns:
+        for campaign in marketing_campaigns:
             lead_sql = """
                 SELECT
                     CL.id
@@ -52,26 +52,26 @@ class CrmMarketingCampaign(models.Model):
                     crm_activity_history CAH
                         INNER JOIN crm_lead CL
                             ON CL.id = CAH.lead_id
-                        INNER JOIN marketing_campaign MC
+                        INNER JOIN crm_marketing_campaign MC
                             ON CL.marketing_camp_id = MC.id
                 WHERE
                     MC.id = %s AND CAH.state = 'done' AND CAH.date_done > '%s'
                 GROUP BY CL.id
-                ORDER BY crm_id;""" % (marketing_campaign.id, scheduler_id.last_execution_date)
+                ORDER BY crm_id;""" % (campaign.id, scheduler_id.last_execution_date)
             self._cr.execute(lead_sql)
             list_id_leads = [res[0] for res in self._cr.fetchall()]
             if not list_id_leads:
                 continue
             file_name = "%s/%s - %s.xlsx" % (
                 os.path.dirname(os.path.abspath(__file__)),
-                marketing_campaign.name,
+                campaign.name,
                 self.convert_to_local_timezone(fields.Datetime.now(), True).strftime("%Y-%m-%d %H-%M-%S"))
             result = self.create_xlsx_file(file_name, list_id_leads)
             if result:
-                partner_server = marketing_campaign.partner_server_id
+                partner_server = campaign.partner_sftp_config_id
                 remote_path = '%s%s' % (
                     partner_server.root_folder,
-                    '/' + marketing_campaign.status_target_folder if marketing_campaign.status_target_folder else '')
+                    '/' + campaign.status_target_folder if campaign.status_target_folder else '')
                 if partner_server.is_encrypted_file:
                     ciphertext = partner_server.encrypt_data_from_file(file_name)
                     with open(file_name, 'wb') as f:
@@ -186,8 +186,7 @@ class CrmMarketingCampaign(models.Model):
     @api.model
     def _cron_start_campaign(self):
         current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        marketing_campaign_obj = self.env['crm.marketing.campaign']
-        campaigns = marketing_campaign_obj.search([
+        campaigns = self.search([
             ('state', '=', 'approved'),
             ('start_date', '<=', current_date), '|',
             ('end_date', '>=', current_date),
@@ -198,8 +197,7 @@ class CrmMarketingCampaign(models.Model):
     @api.model
     def _cron_stop_campaign(self):
         current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        marketing_campaign_obj = self.env['crm.marketing.campaign']
-        campaigns = marketing_campaign_obj.search([('state', '=', 'running'), ('end_date', '<', current_date)])
+        campaigns = self.search([('state', '=', 'running'), ('end_date', '<', current_date)])
         if campaigns:
             for campaign in campaigns:
                 segments = campaign.mapped('segment_ids').filtered(lambda segment: segment.state == 'running')
