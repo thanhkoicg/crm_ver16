@@ -5,8 +5,6 @@ access_crm_activity_result_u,access_crm_activity_result_m,model_crm_activity_res
 access_crm_activity_result_m,access_crm_activity_result_m,model_crm_activity_result,base.group_system,1,1,1,1
 access_crm_marketing_campaign_u,access_crm_marketing_campaign_m,model_crm_marketing_campaign,base.group_user,1,1,1,0
 access_crm_marketing_campaign_m,access_crm_marketing_campaign_m,model_crm_marketing_campaign,base.group_system,1,1,1,1
-access_smn_popup_message,access_smn_popup_message_m,model_smn_popup_message,base.group_user,1,1,1,1
-access_lead_input_image,access_lead_input_image_m,model_lead_input_image,base.group_user,1,1,1,1
 access_mail_activity_type_line,access_mail_activity_type_line_m,model_mail_activity_type_line,base.group_user,1,1,1,1
 access_smn_api_history_u,access_smn_api_history_m,model_smn_api_history,base.group_user,1,1,1,0
 access_smn_api_history_m,access_smn_api_history_s,model_smn_api_history,base.group_system,1,1,1,1
@@ -14,3 +12,4 @@ access_sftp_config_u,access_sftp_config_m,model_sftp_config,base.group_user,1,1,
 access_sftp_config_m,access_sftp_config_s,model_sftp_config,base.group_system,1,1,1,1
 access_sftp_model_u,access_sftp_model_m,model_sftp_model,base.group_user,1,1,1,0
 access_sftp_model_m,access_sftp_model_s,model_sftp_model,base.group_system,1,1,1,1
+access_change_profile_group,access_change_profile_group_m,model_change_profile_group,base.group_user,1,1,1,1

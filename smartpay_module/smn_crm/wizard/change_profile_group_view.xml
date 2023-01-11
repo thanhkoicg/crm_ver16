@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="change_profile_group_view_form" model="ir.ui.view">
+        <field name="name">change.profile.group.form</field>
+        <field name="model">change.profile.group</field>
+        <field name="arch" type="xml">
+            <form string="Change Profile Group">
+                <group class="oe_title">
+                    <field name="group_profile_id"
+                           options="{'no_create': True, 'no_edit': True, 'no_open': True}"
+                           domain="[('is_profile_group', '=', True)]"/>
+                </group>
+                <footer>
+                    <button string="OK" name="act_approve" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+<!--    <record id="change_profile_group_action" model="ir.actions.act_window">-->
+<!--        <field name="name">Change Profile Group</field>-->
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--        <field name="res_model">change.profile.group</field>-->
+<!--        <field name="view_mode">form</field>-->
+<!--        <field name="view_id" ref="change_profile_group_view_form"/>-->
+<!--        <field name="target">new</field>-->
+<!--    </record>-->
+
+    <record id="change_profile_group_action" model="ir.actions.act_window">
+        <field name="name">Change Profile Group</field>
+        <field name="res_model">change.profile.group</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="change_profile_group_view_form"/>
+        <field name="target">new</field>
+        <field name="context">{}</field>
+        <field name="binding_model_id" ref="model_res_users"/>
+        <field name="binding_view_types">list</field>
+    </record>
+</odoo>

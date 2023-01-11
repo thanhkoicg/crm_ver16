@@ -41,8 +41,7 @@ This module allows you to manage API for Partner.
         'views/smn_api_history_view.xml',
         'views/crm_marketing_campaign_view.xml',
         'views/sftp_config_view.xml',
-        'wizard/smn_popup_message_view.xml',
-        'wizard/lead_input_image_view.xml',
+        'wizard/change_profile_group_view.xml',
         'views/menu.xml'
     ],
     'application': True,
