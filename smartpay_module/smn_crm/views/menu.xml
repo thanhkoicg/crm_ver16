@@ -56,18 +56,15 @@
               name="Products"
               parent="crm.crm_menu_root" sequence="3"
               action="sale.product_template_action"/>
-
     <menuitem name="Admins"
           id="menu_admin_custom_root"
           web_icon="smn_crm,static/img/icon.svg"
-          sequence="271"
-          />
-
+          sequence="271" groups="base.group_system,smn_group_function_admin_hr,smn_group_function_admin"/>
     <menuitem id="menu_crm_marketing_campaign"
               name="Campaign"
               parent="smn_crm_leads_main" sequence="6"
-              action="action_crm_marketing_campaign"/>
-
+              action="action_crm_marketing_campaign"
+              groups="base.group_system,smn_group_function_admin_hr,smn_group_function_admin"/>
     <menuitem id="menu_users"
               name="Users"
               parent="menu_admin_custom_root" sequence="1"

@@ -97,21 +97,29 @@
             </xpath>
             <xpath expr="//header//button[@name='create_employee_from_applicant']" position="after">
                 <button string="Submit" name="act_submit" type="object"
-                        attrs="{'invisible': [('status_code', '!=', 'new')], 'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}"/>
+                    attrs="{'invisible': [('status_code', '!=', 'new')], 'readonly': [('status_code', 'not in', ('new','update_profile')), ('status_code', '!=', False)]}"
+                    groups="smn_crm.smn_group_sales_manager"/>
                 <button string="Send to HR" name="act_send_to_hr" type="object"
-                        attrs="{'invisible': [('status_code', 'not in', ('submit', 'update_profile')), ('status_code', '!=', False)]}"/>
+                    groups="smn_crm.smn_group_sales_manager"
+                    attrs="{'invisible': [('status_code', 'not in', ('submit', 'update_profile')), ('status_code', '!=', False)]}"/>
                 <button string="Update Profile" name="act_update_profile" type="object"
-                        attrs="{'invisible': [('status_code', '!=', 'review')]}"/>
+                    groups="smn_crm.smn_group_function_admin_hr"
+                    attrs="{'invisible': [('status_code', '!=', 'review')]}"/>
                 <button string="Interview" name="act_interview" type="object"
-                        attrs="{'invisible': [('status_code', '!=', 'review')]}"/>
+                    groups="smn_crm.smn_group_sales_manager"
+                    attrs="{'invisible': [('status_code', '!=', 'review')]}"/>
                 <button string="Reject" name="act_reject" type="object"
-                        attrs="{'invisible': [('status_code', 'not in', ('review','interview','create_code'))]}"/>
+                    groups="smn_crm.smn_group_function_admin_hr,smn_crm.smn_group_function_admin"
+                    attrs="{'invisible': [('status_code', 'not in', ('review','interview','create_code'))]}"/>
                 <button string="Send to Create Code" name="act_send_to_create_code" type="object"
-                        attrs="{'invisible': [('status_code', '!=', 'interview')]}"/>
+                    groups="smn_crm.smn_group_function_admin_hr"
+                    attrs="{'invisible': [('status_code', '!=', 'interview')]}"/>
                 <button string="Create Code" name="act_create_code" type="object"
-                        attrs="{'invisible': [('status_code', '!=', 'create_code')]}"/>
+                    groups="smn_crm.smn_group_function_admin"
+                    attrs="{'invisible': [('status_code', '!=', 'create_code')]}"/>
                 <button string="Save" name="act_save_applicant" type="object"
-                        attrs="{'invisible': [('status_code', '!=', 'reject')]}"/>
+                    groups="smn_crm.smn_group_function_admin_hr,smn_crm.smn_group_function_admin"
+                    attrs="{'invisible': [('status_code', '!=', 'reject')]}"/>
 <!--                <button string="Create Contract" name="act_create_contract" type="object"-->
 <!--                        attrs="{'invisible': [('status_code', '!=', 'done'), ('user_id', '!=', uid)]}"/>-->
             </xpath>

@@ -41,10 +41,11 @@ class CrmLead(models.Model):
     next_activity_id = fields.Many2one('mail.activity.type', domain="[('id', 'in', comp_next_activity_ids)]", tracking=True)
     next_assign_date = fields.Datetime(tracking=True)
     history_count = fields.Integer(compute="_compute_history_count")
-
     sale_person_code = fields.Char(related='user_id.login')
     is_same_address = fields.Boolean(default=False, string='Same as Address')
     marketing_campaign_id = fields.Many2one('crm.marketing.campaign', tracking=True)
+    follow_activity_result_id = fields.Many2one( "crm.activity.result", string="Result Follow")
+    date_deadline = fields.Date()
 
     @api.depends('stage_id', 'activity_id', 'activity_result_id')
     def _compute_history_count(self):
@@ -128,48 +129,53 @@ class CrmLead(models.Model):
         return super(CrmLead, self).write(vals)
 
     def act_done_activity(self):
-        for rcs in self:
-            if rcs.stage_id.code in ('NEW', 'CG', 'G1', 'G2', 'G3', 'KTDK') and not rcs.next_activity_id:
-                raise UserError("Please input Next activity before done Current activity")
-            act_his_id = self.env['crm.activity.history'].search([
-                ('activity_type_id', '=', rcs.activity_id.id),
-                ('lead_id', '=', rcs.id),
-                ('status', '=', 'new')
-            ])
-            if not act_his_id or (act_his_id and len(act_his_id) > 1):
-                raise UserError("Exists History greater than 1 or not exists activity, please contact Admin")
-            act_his_id.status = 'done'
-            act_his_id.date_done = datetime.now()
-            rcs.act_change_activity()
-        return
-
-    def act_auto_done_activity(self):
+        self.ensure_one()
+        if self.stage_id.code in ('NEW', 'CG', 'G1', 'G2', 'G3', 'KTDK') and not self.next_activity_id:
+            raise UserError("Please input Next activity before done Current activity")
         act_his_id = self.env['crm.activity.history'].search([
             ('activity_type_id', '=', self.activity_id.id),
             ('lead_id', '=', self.id),
             ('status', '=', 'new')
         ])
         if not act_his_id or (act_his_id and len(act_his_id) > 1):
-            return
-            # raise UserError("Exists History greater than 1 or not exists activity, please contact Admin")
+            raise UserError("Exists History greater than 1 or not exists activity, please contact Admin")
         act_his_id.status = 'done'
         act_his_id.date_done = datetime.now()
-        self.env['mail.message'].create({
-            'author_id': self.env.user.partner_id.id,
-            'message_type': 'notification',
-            'subtype_id': 2,
-            'model': 'crm.activity.history',
-            'res_id': act_his_id.id,
-            'body': 'Auto done activity when check CIC'
-        })
-        self.activity_id = False
-        self.assign_user_id = False
-        self.assign_date = False
-        self.next_assign_user_id = False
-        self.next_activity_id = False
-        self.next_assign_date = False
-        self.activity_result_id = False
+        self.act_change_activity()
+
+        activity_id = self.env['crm.activity.history'].search(
+            [('lead_id', '=', self.id), ('state', '=', 'done')], limit=1, order="id desc")
+        if activity_id and activity_id.result_id:
+            self.follow_activity_result_id = activity_id.result_id.id if activity_id else False
+
         return
+
+    # def act_auto_done_activity(self):
+    #     act_his_id = self.env['crm.activity.history'].search([
+    #         ('activity_type_id', '=', self.activity_id.id),
+    #         ('lead_id', '=', self.id),
+    #         ('status', '=', 'new')
+    #     ])
+    #     if not act_his_id or (act_his_id and len(act_his_id) > 1):
+    #         return
+    #     act_his_id.status = 'done'
+    #     act_his_id.date_done = datetime.now()
+    #     self.env['mail.message'].create({
+    #         'author_id': self.env.user.partner_id.id,
+    #         'message_type': 'notification',
+    #         'subtype_id': 2,
+    #         'model': 'crm.activity.history',
+    #         'res_id': act_his_id.id,
+    #         'body': 'Auto done activity when check CIC'
+    #     })
+    #     self.activity_id = False
+    #     self.assign_user_id = False
+    #     self.assign_date = False
+    #     self.next_assign_user_id = False
+    #     self.next_activity_id = False
+    #     self.next_assign_date = False
+    #     self.activity_result_id = False
+    #     return
 
     def act_change_activity(self):
         create_history = None
@@ -198,7 +204,6 @@ class CrmLead(models.Model):
         })
         return True
 
-
     def act_reject_lead(self):
         stage_id = self._get_stage_id('TC')
         self.stage_id = stage_id.id
@@ -215,7 +220,7 @@ class CrmLead(models.Model):
                     raise UserError(_("You can delete when status is New, please cancel Lead"))
         return super(CrmLead, self).unlink()
 
-    def button_click_to_call_mobile(self):
+    def button_click_to_call(self):
         self.ensure_one()
         if not self.phone:
             raise UserError(_('Please make sure field Mobile is NOT empty.'))
@@ -319,8 +324,8 @@ class CrmLead(models.Model):
                     'res_model': 'queue.job',
                     'res_id': job.id,
                 })
-                if attachment:
-                    remote.remove(file_path)
+                # if attachment:
+                #     remote.remove(file_path)
             except Exception as e:
                 self.env['smn.api.history'].sudo().create({
                     'name': 'download_file_from_sftp',
@@ -352,9 +357,9 @@ class CrmLead(models.Model):
                 else:
                     nic_number = row[2].value and str(row[2].value) or ''
                 if type(row[3].value) is float:
-                    mobile = str(int(row[3].value))
+                    phone = str(int(row[3].value))
                 else:
-                    mobile = row[3].value
+                    phone = row[3].value
                 marketing_campaign_name = row[4].value
                 sales_person_code = row[5].value
                 stage_name = row[6].value
@@ -395,7 +400,7 @@ class CrmLead(models.Model):
                     'partner_id': contact_id.id,
                     'user_id': user_id.id if user_id else 1,
                     'state_id': state_id.id if state_id else 'NULL',
-                    'mobile': mobile,
+                    'phone': phone,
                     'marketing_campaign_id': marketing_campaign_id.id if marketing_campaign_id else 'NULL',
                     'description': description and description.replace("'", "''") or '',
                     'assign_user_id': assign_user_id.id if assign_user_id else 'NULL',
@@ -407,12 +412,12 @@ class CrmLead(models.Model):
                     'create_date': datetime.now()
                 }
                 sql = u"""INSERT INTO crm_lead (
-                        name,contact_name,nic_number,partner_id,user_id,state_id,mobile,marketing_campaign_id,description,
+                        name,contact_name,nic_number,partner_id,user_id,state_id,phone,marketing_campaign_id,description,
                         assign_user_id,next_activity_id,street,stage_id,type,active,
                         date_deadline,create_date
                     )
                     VALUES (
-                        '{name}','{contact_name}','{nic_number}',{partner_id},{user_id},{state_id},'{mobile}',{marketing_campaign_id},
+                        '{name}','{contact_name}','{nic_number}',{partner_id},{user_id},{state_id},'{phone}',{marketing_campaign_id},
                         '{description}',{assign_user_id},{next_activity_id},'{street}',
                         {stage_id},'{type}',True,'{date_deadline}','{create_date}'
                     ) RETURNING id""".format(**vals)

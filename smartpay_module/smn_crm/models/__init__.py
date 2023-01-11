@@ -10,3 +10,4 @@ from . import ir_attachment
 from . import crm_marketing_campaign
 from . import sftp_config
 from . import res_groups
+from . import res_partner

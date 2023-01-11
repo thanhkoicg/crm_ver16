@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data noupdate="0">
-        <record id="smn_crm.module_category_profile_group" model="ir.module.category">
-            <field name="name">Profile Group</field>
-            <field name="description">Define groups for Profile.</field>
-            <field name="sequence">1</field>
-        </record>
         <record id="smn_group_sales_agent" model="res.groups">
             <field name="name">Sales Agent</field>
-<!--            <field name="category_id" ref="smn_crm.module_category_profile_group" />-->
             <field name="is_profile_group" eval="True" />
             <field name="implied_ids" eval="[(6, 0, [
                 ref('sales_team.group_sale_salesman'),
                 ref('base.group_user')])]"/>
+            <field name="comment">The same Sale Only Document.</field>
         </record>
         <record id="smn_group_sales_manager" model="res.groups">
             <field name="name">Sales Manager</field>
-<!--            <field name="category_id" ref="smn_crm.module_category_profile_group" />-->
             <field name="is_profile_group" eval="True" />
             <field name="implied_ids" eval="[(6, 0, [
                 ref('sales_team.group_sale_salesman'),
@@ -25,24 +19,24 @@
         </record>
         <record id="smn_group_function_admin" model="res.groups">
             <field name="name">Function Admin</field>
-<!--            <field name="category_id" ref="smn_crm.module_category_profile_group" />-->
             <field name="is_profile_group" eval="True" />
             <field name="implied_ids" eval="[(6, 0, [
-                ref('sales_team.group_sale_manager')])]"/>
+                ref('sales_team.group_sale_salesman'),
+                ref('hr_recruitment.group_hr_recruitment_manager')])]"/>
             <field name="comment">The same Sale Manager.</field>
         </record>
         <record id="smn_group_function_admin_hr" model="res.groups">
             <field name="name">Function Admin &amp; HR</field>
             <field name="is_profile_group" eval="True" />
-<!--            <field name="category_id" ref="smn_crm.module_category_profile_group" />-->
             <field name="implied_ids"
                 eval="[(6, 0, [
                     ref('hr.group_hr_manager'),
+                    ref('sales_team.group_sale_manager'),
                     ref('hr_contract.group_hr_contract_manager'),
                     ref('hr_contract.group_hr_contract_employee_manager'),
                     ref('hr_recruitment.group_hr_recruitment_manager')
                     ])]"/>
-
+            <field name="comment">The same Sale, HR, Recruitment Manger.</field>
         </record>
     </data>
 <!--    <data noupdate="1">-->

@@ -39,6 +39,21 @@ class CrmMarketingCampaign(models.Model):
         ("done", "Done"),
         ("cancel", "Cancel")], default='new', tracking=True)
 
+    def action_approve(self):
+        self.ensure_one()
+        self.status = 'approved'
+        return
+
+    def action_cancel(self):
+        self.ensure_one()
+        self.status = 'cancel'
+        return
+
+    def action_force_done(self):
+        self.ensure_one()
+        self.status = 'done'
+        return
+
     @api.model
     def _cron_export_lead_following_campaign(self):
         marketing_campaigns = self.search([('state', 'in', ['running', 'done']), ('partner_sftp_config_id', '!=', False)])

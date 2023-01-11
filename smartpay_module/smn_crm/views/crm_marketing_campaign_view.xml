@@ -35,6 +35,9 @@
         <field name="arch" type="xml">
             <form string="Marketing Campaign">
                 <header>
+                    <button type="object" name="action_approve" string="Approve" class="oe_highlight" attrs="{'invisible': [('status','!=','new')]}"/>
+                    <button type="object" name="action_cancel" string="Cancel" class="oe_highlight" attrs="{'invisible': [('status','!=','approved')]}"/>
+                    <button type="object" name="action_force_done" string="Force Done" class="oe_highlight" attrs="{'invisible': [('status','!=','running')]}"/>
                     <field name="status" widget="statusbar"/>
                 </header>
                 <sheet>
