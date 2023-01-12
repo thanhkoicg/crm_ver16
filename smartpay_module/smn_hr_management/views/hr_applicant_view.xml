@@ -106,7 +106,7 @@
                     groups="smn_crm.smn_group_function_admin_hr"
                     attrs="{'invisible': [('status_code', '!=', 'review')]}"/>
                 <button string="Interview" name="act_interview" type="object"
-                    groups="smn_crm.smn_group_sales_manager"
+                    groups="smn_crm.smn_group_function_admin_hr"
                     attrs="{'invisible': [('status_code', '!=', 'review')]}"/>
                 <button string="Reject" name="act_reject" type="object"
                     groups="smn_crm.smn_group_function_admin_hr,smn_crm.smn_group_function_admin"

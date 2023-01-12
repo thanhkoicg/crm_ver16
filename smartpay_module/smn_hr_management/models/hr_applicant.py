@@ -123,6 +123,10 @@ class HrApplicant(models.Model):
         stage_id = self.env['hr.recruitment.stage'].search([('code', '=', 'done')])
         if not stage_id:
             raise UserError("Not found stage name Done, please contact Admin")
+        if not self.create_code_user_id:
+            raise UserError("Not found Create Code User, please contact Admin")
+        if self.create_code_user_id and self.env.user.id != self.create_code_user_id.id:
+            raise UserError("Only %s can Create Code for User" %  self.create_code_user_id.name)
         self.stage_id = stage_id.id
         self.act_create_user_applicant()
         return
@@ -144,25 +148,29 @@ class HrApplicant(models.Model):
         return
 
     @api.model_create_multi
-    def create(self, values):
-        stage_new_id = self.env['hr.recruitment.stage'].search([('code', '=', 'new')])
-        values['stage_id'] = stage_new_id.id if stage_new_id else False
-        # values['responsible_user_id'] = self.env.user.id
-        if values.get('job_id'):
-            new_job = self.env['hr.job'].browse(values.get('job_id'))
-            if new_job and not new_job.line_ids:
-                raise UserError("Not found Document checklist, please contact HR")
-            line_ids = []
-            for doc in new_job.line_ids:
-                line_ids.append((0, 0, {
-                    'res_model': 'hr.applicant',
-                    'hr_document_type_id': doc.hr_document_type_id.id,
-                    'name': "No attachment",
-                    'type': 'binary',
-                    'public': True
-                }))
-            values['attachment_ids'] = line_ids
-            values['create_code_user_id'] = new_job.create_code_user_id.id
+    def create(self, vals_list):
+        for values in vals_list:
+            stage_new_id = self.env['hr.recruitment.stage'].search([('code', '=', 'new')])
+            values['stage_id'] = stage_new_id.id if stage_new_id else False
+            # values['responsible_user_id'] = self.env.user.id
+
+            if values.get('job_id'):
+                new_job = self.env['hr.job'].browse(values.get('job_id'))
+                if new_job and not new_job.line_ids:
+                    raise UserError("Not found Document checklist, please contact HR")
+                line_ids = []
+                for doc in new_job.line_ids:
+                    line_ids.append((0, 0, {
+                        'res_model': 'hr.applicant',
+                        'hr_document_type_id': doc.hr_document_type_id.id,
+                        'name': "No attachment",
+                        'type': 'binary',
+                        'public': True
+                    }))
+                values['attachment_ids'] = line_ids
+                values['create_code_user_id'] = new_job.create_code_user_id.id
+                if self.env.user.partner_id.team_id and self.env.user.partner_id.team_id.user_id:
+                    values['confirm_user_id'] = self.env.user.partner_id.team_id.user_id
         return super(HrApplicant, self).create(values)
 
     def write(self, vals):
@@ -189,6 +197,8 @@ class HrApplicant(models.Model):
                     }))
                 vals['attachment_ids'] = line_ids
                 vals['create_code_user_id'] = new_job.create_code_user_id.id
+                if self.env.user.partner_id.team_id and self.env.user.partner_id.team_id.user_id:
+                    vals['confirm_user_id'] = self.env.user.partner_id.team_id.user_id
         return super(HrApplicant, self).write(vals)
 
     def act_create_user_applicant(self):
