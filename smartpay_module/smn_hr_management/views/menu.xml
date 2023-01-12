@@ -15,6 +15,13 @@
             action="smn_hr_contract_action"
             parent="hr.menu_hr_employee_payroll"
             sequence="5"/>
+    <menuitem
+        id="hr_contract.hr_menu_contract_history"
+        action="hr_contract.hr_contract_history_view_list_action"
+        parent="hr.menu_hr_employee_payroll"
+        name="Contracts"
+        sequence="4"
+        groups="base.group_no_one"/>
 <!--    <menuitem-->
 <!--            id="menu_smn_employee_need_create_contract"-->
 <!--            name="Need create Contract"-->
