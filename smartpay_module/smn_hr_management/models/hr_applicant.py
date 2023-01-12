@@ -231,6 +231,7 @@ class HrApplicant(models.Model):
             'image_1920': False
         }
         place_of_birth = "%s, %s, %s, %s" % (self.address, self.ward_id.name, self.district_id.name, self.province_id.name)
+        parent_id = self.env['hr.employee'].search([('user_id', '=', self.create_uid.id)])
         emp_vals = {
             'department_id': self.department_id.id if self.department_id else False,
             'mobile_phone': self.partner_phone,
@@ -241,7 +242,7 @@ class HrApplicant(models.Model):
             'job_id': self.job_id.id if self.job_id else False,
             'work_email': self.email_from,
             'work_phone': self.partner_phone,
-            'parent_id': self.create_uid.id,
+            'parent_id': parent_id.id if parent_id else False,
         }
         new_user = self.env['res.users'].with_user(SUPERUSER_ID).create(user_vals)
         self.applicant_user_id = new_user.id
@@ -315,7 +316,7 @@ class HrApplicant(models.Model):
             'applicant_url': applicant_url,
         }
         email_values = {
-            'email_to': self.applicant_user_id.email,
+            'email_to': self.email_from,
             'email_cc': False,
             'auto_delete': True,
             'recipient_ids': [],

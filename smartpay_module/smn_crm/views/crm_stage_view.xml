@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//sheet//group//field[@name='team_count']" position="before">
                 <group>
-                    <field name="code"/>
+                    <field name="code" groups="base.group_system"/>
                 </group>
             </xpath>
         </field>
@@ -19,7 +19,7 @@
         <field name="inherit_id" ref="crm.crm_stage_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="before">
-                <field name="code"/>
+                <field name="code" groups="base.group_system"/>
             </xpath>
         </field>
     </record>

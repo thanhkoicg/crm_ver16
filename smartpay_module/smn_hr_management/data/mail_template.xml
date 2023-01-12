@@ -8,7 +8,7 @@
             <field name="model_id" ref="hr_recruitment.model_hr_applicant"/>
             <field name="subject">[Recruitment] Profile has been create code</field>
             <field name="body_html" type="xml">
-				<p>[Recruitment] Profile has been create code by <t t-out="object.user_create_code or ''"/></p>
+				<p>[Recruitment] Profile has been create code by <t t-out="object.create_code_user_id.name or ''"/></p>
                 <p>- Account name: <t t-out="object.applicant_user_code or ''"/></p>
                 <p>- Password: your National ID</p>
                 <p></p><p></p>

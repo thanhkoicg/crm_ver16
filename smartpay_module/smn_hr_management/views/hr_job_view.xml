@@ -5,15 +5,8 @@
         <field name="model">hr.job</field>
         <field name="inherit_id" ref="hr.view_hr_job_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//notebook" position="before">
-                <group>
-<!--                    <group>-->
-<!--                        <field name="recruitment_id"/>-->
-<!--                    </group>-->
-                    <group>
-                        <field name="create_code_user_id"/>
-                    </group>
-                </group>
+            <xpath expr="//field[@name='department_id']" position="after">
+                <field name="create_code_user_id"/>
             </xpath>
             <xpath expr="//notebook//page" position="after">
                 <page name="job_document_line" string="Documents">

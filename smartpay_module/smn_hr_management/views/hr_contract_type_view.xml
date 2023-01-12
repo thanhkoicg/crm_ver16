@@ -21,7 +21,7 @@
         <field name="inherit_id" ref="hr.hr_contract_type_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//group" position="after">
-<!--                <label for="content"/>-->
+                <label for="content"/>
                 <field name="content" widget="html" options="{'style-inline': true, 'codeview': true, 'dynamic_placeholder': true}"/>
             </xpath>
         </field>
