@@ -15,10 +15,10 @@
             action="smn_hr_contract_action"
             parent="hr.menu_hr_employee_payroll"
             sequence="5"/>
-    <menuitem
-            id="menu_smn_employee_need_create_contract"
-            name="Need create Contract"
-            action="smn_hr_contract_action"
-            parent="hr.menu_hr_employee_payroll"
-            sequence="6"/>
+<!--    <menuitem-->
+<!--            id="menu_smn_employee_need_create_contract"-->
+<!--            name="Need create Contract"-->
+<!--            action="smn_hr_contract_action"-->
+<!--            parent="hr.menu_hr_employee_payroll"-->
+<!--            sequence="6"/>-->
 </odoo>

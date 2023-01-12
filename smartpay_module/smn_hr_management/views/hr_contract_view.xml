@@ -108,6 +108,7 @@
             </xpath>
             <xpath expr="//field[@name='contract_type_id']" position="attributes">
                 <attribute name="attrs">{'readonly': [('status', '!=', 'draft')]}</attribute>
+                <attribute name="attrs">{'required': True}</attribute>
             </xpath>
             <xpath expr="//field[@name='department_id']" position="replace">
             </xpath>

@@ -167,14 +167,17 @@
                         <div>
                             <div class="o_row o_row_readonly o_hr_holidays_dates">
                                 <field name="province_id"
+                                       options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"
                                        attrs="{'required': [('status_code', '=', 'HGKH')],
                                        'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}"
                                        placeholder="TP/Tỉnh" class="oe_inline" nolabel="1"/>
                                 <field name="district_id"
+                                       options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"
                                        attrs="{'required': [('status_code', '=', 'HGKH')],
                                        'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}"
                                        placeholder="Quận/Huyện" class="oe_inline"/>
                                 <field name="ward_id"
+                                       options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"
                                        attrs="{'required': [('status_code', '=', 'HGKH')],
                                        'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}"
                                        placeholder="Xã/Phường" class="oe_inline"/>
@@ -189,12 +192,15 @@
                         <div>
                             <div class="o_row o_row_readonly o_hr_holidays_dates">
                                 <field name="household_province_id"
+                                       options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"
                                        attrs="{'required': [('status_code', '=', 'HGKH')],
                                        'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}" placeholder="TP/Tỉnh" class="oe_inline" nolabel="1"/>
                                 <field name="household_district_id"
+                                       options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"
                                        attrs="{'required': [('status_code', '=', 'HGKH')],
                                        'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}" placeholder="Quận/Huyện" class="oe_inline"/>
                                 <field name="household_ward_id"
+                                       options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"
                                        attrs="{'required': [('status_code', '=', 'HGKH')],
                                        'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}" placeholder="Xã/Phường" class="oe_inline"/>
                             </div>
@@ -247,7 +253,9 @@
                         attrs="{'invisible': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'KTDK'))]}"/>
                         <separator/>
                         <field name="date_deadline" attrs="{'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}"/>
-                        <field name="marketing_campaign_id" attrs="{'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}"/>
+                        <field name="marketing_campaign_id"
+                               options="{'no_open': True, 'no_create': True,'no_quick_create': True, 'no_edit': True}"
+                               attrs="{'readonly': [('status_code', 'not in', ('NEW', 'CG', 'G1', 'G2', 'G3', 'HGKH'))]}"/>
                     </group>
                 </group>
             </xpath>

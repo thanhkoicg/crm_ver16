@@ -38,6 +38,7 @@ class HrApplicant(models.Model):
     status_code = fields.Char(related='stage_id.code')
     description = fields.Text(tracking=True)
     created_contract = fields.Boolean()
+    team_id = fields.Many2one('crm.team')
 
     @api.onchange('is_same_address')
     def onchange_activity_id(self):
@@ -238,10 +239,16 @@ class HrApplicant(models.Model):
             'gender': self.gender if self.gender else False,
             'place_of_birth': place_of_birth,
             'job_id': self.job_id.id if self.job_id else False,
-            'work_email': self.email_from
+            'work_email': self.email_from,
+            'work_phone': self.partner_phone,
+            'parent_id': self.create_uid.id,
         }
         new_user = self.env['res.users'].with_user(SUPERUSER_ID).create(user_vals)
         self.applicant_user_id = new_user.id
+        new_user.partner_id.phone = self.partner_phone
+        new_user.partner_id.email = self.email_from
+        new_user.partner_id.team_id = self.team_id.id
+        new_user.partner_id.code = self.applicant_user_code
         employee_id = self.env['hr.employee'].search([('user_id', '=', new_user.id)])
         employee_id.write(emp_vals)
         if self.bank_id and self.bank_account and self.partner_name:
