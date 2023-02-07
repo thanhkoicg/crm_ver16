@@ -170,9 +170,13 @@ class HrApplicant(models.Model):
                     }))
                 values['attachment_ids'] = line_ids
                 values['create_code_user_id'] = new_job.create_code_user_id.id
-                if self.env.user.partner_id.team_id and self.env.user.partner_id.team_id.user_id:
-                    values['confirm_user_id'] = self.env.user.partner_id.team_id.user_id
-        return super(HrApplicant, self).create(values)
+                if not values['team_id']:
+                    raise UserError("Please input Team")
+                team_id = self.env['crm.team'].browse(int(values['team_id']))
+                if team_id and not team_id.user_id:
+                    raise UserError("Not found Lead Team of %s" % team_id.name)
+                values['confirm_user_id'] = team_id.user_id.id
+            return super(HrApplicant, self).create(values)
 
     def write(self, vals):
         for app in self:
@@ -198,8 +202,12 @@ class HrApplicant(models.Model):
                     }))
                 vals['attachment_ids'] = line_ids
                 vals['create_code_user_id'] = new_job.create_code_user_id.id
-                if self.env.user.partner_id.team_id and self.env.user.partner_id.team_id.user_id:
-                    vals['confirm_user_id'] = self.env.user.partner_id.team_id.user_id
+                if not vals['team_id']:
+                    raise UserError("Please input Team")
+                team_id = self.env['crm.team'].browse(int(vals['team_id']))
+                if team_id and not team_id.user_id:
+                    raise UserError("Not found Lead Team of %s" % team_id.name)
+                vals['confirm_user_id'] = team_id.user_id.id
         return super(HrApplicant, self).write(vals)
 
     def act_create_user_applicant(self):
@@ -248,7 +256,8 @@ class HrApplicant(models.Model):
         self.applicant_user_id = new_user.id
         new_user.partner_id.phone = self.partner_phone
         new_user.partner_id.email = self.email_from
-        new_user.partner_id.team_id = self.team_id.id
+        new_user.team_id = self.team_id.id
+        self.team_id.member_ids += new_user
         new_user.partner_id.code = self.applicant_user_code
         employee_id = self.env['hr.employee'].search([('user_id', '=', new_user.id)])
         employee_id.write(emp_vals)

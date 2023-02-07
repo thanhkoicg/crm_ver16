@@ -10,3 +10,4 @@ class CrmStage(models.Model):
     _inherit = 'crm.stage'
 
     code = fields.Char(required=True)
+    display = fields.Boolean(default=False)

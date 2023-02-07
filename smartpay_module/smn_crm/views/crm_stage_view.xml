@@ -7,7 +7,8 @@
         <field name="arch" type="xml">
             <xpath expr="//sheet//group//field[@name='team_count']" position="before">
                 <group>
-                    <field name="code" groups="base.group_system"/>
+                    <field name="code" groups="base.group_system"/>display
+                    <field name="display"/>
                 </group>
             </xpath>
         </field>
