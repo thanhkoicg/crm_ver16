@@ -20,6 +20,9 @@
                     </field>
                 </page>
             </xpath>
+            <xpath expr="//field[@name='contract_type_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
         </field>
     </record>
 </odoo>
